@@ -1,0 +1,60 @@
+{
+  "name": "VolunteerOpportunity",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "concessions",
+        "field_prep",
+        "scorekeeping",
+        "fundraising",
+        "event"
+      ],
+      "enumColors": [
+        "yellow",
+        "green",
+        "blue",
+        "purple",
+        "pink"
+      ],
+      "default": "concessions"
+    },
+    "date": {
+      "type": "string"
+    },
+    "spots": {
+      "type": "number",
+      "default": 0
+    },
+    "team": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "filled",
+        "closed"
+      ],
+      "enumColors": [
+        "green",
+        "gray",
+        "gray"
+      ],
+      "default": "open"
+    }
+  },
+  "required": [
+    "title"
+  ],
+  "rls": {
+    "read": {}
+  }
+}

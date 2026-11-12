@@ -1,0 +1,62 @@
+{
+  "name": "Registration",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "tryout",
+        "camp",
+        "clinic",
+        "season",
+        "tournament"
+      ],
+      "enumColors": [
+        "red",
+        "purple",
+        "blue",
+        "green",
+        "yellow"
+      ],
+      "default": "season"
+    },
+    "event_date": {
+      "type": "string"
+    },
+    "cost": {
+      "type": "number",
+      "default": 0
+    },
+    "link": {
+      "type": "string",
+      "description": "External registration form URL"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "closed"
+      ],
+      "enumColors": [
+        "green",
+        "gray"
+      ],
+      "default": "open"
+    },
+    "team": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title"
+  ],
+  "rls": {
+    "read": {}
+  }
+}

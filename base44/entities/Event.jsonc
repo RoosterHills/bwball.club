@@ -1,0 +1,48 @@
+{
+  "name": "Event",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "practice",
+        "game",
+        "tournament",
+        "meeting",
+        "other"
+      ],
+      "enumColors": [
+        "blue",
+        "green",
+        "purple",
+        "gray",
+        "gray"
+      ],
+      "default": "practice"
+    },
+    "team": {
+      "type": "string",
+      "description": "Team record id; leave empty for org-wide"
+    },
+    "location": {
+      "type": "string"
+    },
+    "start": {
+      "type": "string",
+      "description": "Start date and time, e.g. 2027-04-12T17:30"
+    },
+    "description": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "start"
+  ],
+  "rls": {
+    "read": {}
+  }
+}

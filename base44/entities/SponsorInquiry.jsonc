@@ -1,0 +1,42 @@
+{
+  "name": "SponsorInquiry",
+  "type": "object",
+  "properties": {
+    "company": {
+      "type": "string"
+    },
+    "contact_name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "contacted",
+        "closed"
+      ],
+      "enumColors": [
+        "blue",
+        "yellow",
+        "gray"
+      ],
+      "default": "new"
+    }
+  },
+  "required": [
+    "company",
+    "email"
+  ],
+  "rls": {
+    "read": {}
+  }
+}

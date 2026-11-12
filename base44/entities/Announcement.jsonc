@@ -1,0 +1,43 @@
+{
+  "name": "Announcement",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "normal",
+        "high",
+        "urgent"
+      ],
+      "enumColors": [
+        "gray",
+        "yellow",
+        "red"
+      ],
+      "default": "normal"
+    },
+    "team": {
+      "type": "string",
+      "description": "Team record id; leave empty for organization-wide"
+    },
+    "publish_date": {
+      "type": "string"
+    },
+    "expiration_date": {
+      "type": "string",
+      "description": "Hidden from the site after this date"
+    }
+  },
+  "required": [
+    "title"
+  ],
+  "rls": {
+    "read": {}
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "name": "Sponsor",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "logo": {
+      "type": "string"
+    },
+    "website": {
+      "type": "string"
+    },
+    "level": {
+      "type": "string",
+      "enum": [
+        "platinum",
+        "gold",
+        "silver",
+        "community"
+      ],
+      "enumColors": [
+        "purple",
+        "yellow",
+        "gray",
+        "blue"
+      ],
+      "default": "community"
+    },
+    "contact_name": {
+      "type": "string"
+    },
+    "contact_email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "blurb": {
+      "type": "string",
+      "description": "Short recognition note"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "read": {}
+  }
+}

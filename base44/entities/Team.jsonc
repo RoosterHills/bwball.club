@@ -1,0 +1,86 @@
+{
+  "name": "Team",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Team nickname, e.g. Eagles"
+    },
+    "age_group": {
+      "type": "string",
+      "description": "e.g. 13U, 16U"
+    },
+    "season": {
+      "type": "string",
+      "description": "Season label, e.g. Spring 2027"
+    },
+    "division": {
+      "type": "string",
+      "description": "Optional division or league"
+    },
+    "head_coach": {
+      "type": "string"
+    },
+    "head_coach_email": {
+      "type": "string"
+    },
+    "assistant_coaches": {
+      "type": "string"
+    },
+    "photo": {
+      "type": "string",
+      "description": "Team photo URL"
+    },
+    "wins": {
+      "type": "number",
+      "default": 0
+    },
+    "losses": {
+      "type": "number",
+      "default": 0
+    },
+    "ties": {
+      "type": "number",
+      "default": 0
+    },
+    "gamechanger_url": {
+      "type": "string"
+    },
+    "schedule_url": {
+      "type": "string"
+    },
+    "watch_live_url": {
+      "type": "string"
+    },
+    "stats_url": {
+      "type": "string"
+    },
+    "roster_url": {
+      "type": "string"
+    },
+    "photos_url": {
+      "type": "string"
+    },
+    "store_url": {
+      "type": "string"
+    },
+    "sponsor": {
+      "type": "string",
+      "description": "Sponsor record id \u2014 drives the team display name"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    },
+    "sort_order": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "read": {}
+  }
+}

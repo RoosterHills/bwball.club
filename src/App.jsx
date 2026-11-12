@@ -6,7 +6,18 @@ import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
-// Add page imports here
+import SiteLayout from '@/components/site/SiteLayout';
+import Home from '@/pages/Home';
+import TeamHub from '@/pages/TeamHub';
+import Schedule from '@/pages/Schedule';
+import RegistrationCenter from '@/pages/RegistrationCenter';
+import GameChangerHub from '@/pages/GameChangerHub';
+import VolunteerCenter from '@/pages/VolunteerCenter';
+import ParentResources from '@/pages/ParentResources';
+import SponsorCenter from '@/pages/SponsorCenter';
+import News from '@/pages/News';
+import CoachesCorner from '@/pages/CoachesCorner';
+import Admin from '@/pages/Admin';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -34,7 +45,19 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
-      {/* Add your page Route elements here */}
+      <Route element={<SiteLayout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/teams/:teamId" element={<TeamHub />} />
+        <Route path="/schedule" element={<Schedule />} />
+        <Route path="/register" element={<RegistrationCenter />} />
+        <Route path="/gamechanger" element={<GameChangerHub />} />
+        <Route path="/volunteer" element={<VolunteerCenter />} />
+        <Route path="/parents" element={<ParentResources />} />
+        <Route path="/sponsors" element={<SponsorCenter />} />
+        <Route path="/news" element={<News />} />
+        <Route path="/coaches" element={<CoachesCorner />} />
+        <Route path="/admin" element={<Admin />} />
+      </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
