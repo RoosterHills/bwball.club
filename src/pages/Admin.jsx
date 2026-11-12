@@ -12,6 +12,7 @@ import UsersPanel from "@/admin/UsersPanel";
 import AuditPanel from "@/admin/AuditPanel";
 import ArchivedPanel from "@/admin/ArchivedPanel";
 import IntegrationsPanel from "@/admin/IntegrationsPanel";
+import AccessPanel from "@/admin/AccessPanel";
 import { logAudit } from "@/lib/audit";
 import { BTN } from "@/lib/styles";
 import { cn } from "@/lib/utils";
@@ -19,6 +20,7 @@ import { cn } from "@/lib/utils";
 const PANEL_SECTIONS = [
   { key: "org", label: "Organization settings", group: "Website" },
   { key: "website", label: "Website & homepage", group: "Website" },
+  { key: "access", label: "Access requests", group: "People" },
   { key: "users", label: "Users & roles", group: "People" },
   { key: "integrations", label: "Integrations", group: "System" },
   { key: "archive", label: "Archived content", group: "System" },
@@ -32,6 +34,7 @@ const GROUP_OF = {
   seasons: "Program",
   sponsors: "Program",
   partners: "Program",
+  players: "Program",
   events: "Season ops",
   announcements: "Season ops",
   registrations: "Season ops",
@@ -234,6 +237,8 @@ export default function Admin() {
                   intro="Homepage title and intro, buttons, section headings, footer copy, contact details, and organization-wide GameChanger and livestream links."
                   savedMessage="Website content updated"
                 />
+              ) : section.key === "access" ? (
+                <AccessPanel />
               ) : section.key === "users" ? (
                 <UsersPanel />
               ) : section.key === "audit" ? (

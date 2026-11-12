@@ -44,6 +44,7 @@
     },
     "visibility": {
       "type": "string",
+      "description": "public = anyone, coaches = approved members and staff only",
       "enum": [
         "public",
         "coaches"
@@ -63,6 +64,42 @@
     "title"
   ],
   "rls": {
-    "read": {}
+    "read": {
+      "$or": [
+        {
+          "data.visibility": "public"
+        },
+        {
+          "data.visibility": {
+            "$exists": false
+          }
+        },
+        {
+          "user_condition": {
+            "data.access_status": "approved"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
   }
 }

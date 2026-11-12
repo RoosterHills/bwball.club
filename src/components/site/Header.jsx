@@ -3,6 +3,7 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { useAuth } from "@/lib/AuthContext";
 
 const isInternal = (to) => String(to || "").startsWith("/");
 
@@ -10,6 +11,7 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
   const { headerNav, settings } = useSiteContent();
+  const { isAuthenticated } = useAuth();
   const siteName = settings?.site_name || "BWBALL.CLUB";
 
   return (
@@ -52,6 +54,12 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
+          <Link
+            to={isAuthenticated ? "/members" : "/login"}
+            className="eyebrow text-foreground/55 transition-colors hover:text-foreground"
+          >
+            {isAuthenticated ? "Members" : "Sign in"}
+          </Link>
           <Link
             to="/schedule"
             className="hidden border border-primary/15 px-3.5 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground/80 transition-colors hover:border-accent hover:text-accent sm:inline-block"

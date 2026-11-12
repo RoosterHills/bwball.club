@@ -1,12 +1,17 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useToast } from "@/components/ui/use-toast";
+import { useCollection } from "@/hooks/useSiteData";
 import { logAudit } from "@/lib/audit";
+
+const LEVELS = ["fan", "parent", "player", "coach", "team_admin", "org_admin"];
+const STATUSES = ["pending", "approved", "denied"];
 
 const rows = (res) => (Array.isArray(res) ? res : res?.items ?? []);
 
 export default function UsersPanel() {
   const { toast } = useToast();
+  const { items: teams } = useCollection("Team", "sort_order");
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -39,6 +44,21 @@ export default function UsersPanel() {
       await load();
     } catch {
       setError("Could not change that role.");
+    }
+  };
+
+  const changeAccess = async (user, patch) => {
+    try {
+      await base44.entities.User.update(user.id, patch);
+      logAudit({
+        action: "Access updated",
+        entity: "User",
+        label: `${user.email} → ${Object.values(patch).join(", ")}`,
+      });
+      toast({ title: "Access updated" });
+      await load();
+    } catch {
+      setError("Could not change access. You may need to be signed in as an admin.");
     }
   };
 
@@ -105,6 +125,9 @@ export default function UsersPanel() {
                 <th className="eyebrow px-4 py-3 text-muted-foreground">Person</th>
                 <th className="eyebrow px-4 py-3 text-muted-foreground">Email</th>
                 <th className="eyebrow px-4 py-3 text-muted-foreground">Role</th>
+                <th className="eyebrow px-4 py-3 text-muted-foreground">Access</th>
+                <th className="eyebrow px-4 py-3 text-muted-foreground">Status</th>
+                <th className="eyebrow px-4 py-3 text-muted-foreground">Team link</th>
               </tr>
             </thead>
             <tbody>
@@ -120,6 +143,48 @@ export default function UsersPanel() {
                     >
                       <option value="user">User</option>
                       <option value="admin">Admin</option>
+                    </select>
+                  </td>
+                  <td className="px-4 py-3">
+                    <select
+                      value={user.access_level || "fan"}
+                      onChange={(e) => changeAccess(user, { access_level: e.target.value })}
+                      className="border border-input bg-background px-2 py-1 text-xs outline-none focus:border-accent"
+                    >
+                      {LEVELS.map((level) => (
+                        <option key={level} value={level}>
+                          {level.replace(/_/g, " ")}
+                        </option>
+                      ))}
+                    </select>
+                  </td>
+                  <td className="px-4 py-3">
+                    <select
+                      value={user.access_status || "pending"}
+                      onChange={(e) => changeAccess(user, { access_status: e.target.value })}
+                      className="border border-input bg-background px-2 py-1 text-xs outline-none focus:border-accent"
+                    >
+                      {STATUSES.map((status) => (
+                        <option key={status} value={status}>
+                          {status}
+                        </option>
+                      ))}
+                    </select>
+                  </td>
+                  <td className="px-4 py-3">
+                    <select
+                      value={(user.linked_teams || [])[0] || ""}
+                      onChange={(e) =>
+                        changeAccess(user, { linked_teams: e.target.value ? [e.target.value] : [] })
+                      }
+                      className="border border-input bg-background px-2 py-1 text-xs outline-none focus:border-accent"
+                    >
+                      <option value="">No team</option>
+                      {teams.map((team) => (
+                        <option key={team.id} value={team.id}>
+                          {[team.age_group, team.name].filter(Boolean).join(" · ")}
+                        </option>
+                      ))}
                     </select>
                   </td>
                 </tr>

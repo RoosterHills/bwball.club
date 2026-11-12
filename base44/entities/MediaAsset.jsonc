@@ -27,6 +27,23 @@
       ],
       "default": "general"
     },
+    "privacy": {
+      "type": "string",
+      "description": "public = anyone, members = approved accounts, team = linked team members, admin = staff only",
+      "enum": [
+        "public",
+        "members",
+        "team",
+        "admin"
+      ],
+      "enumColors": [
+        "green",
+        "blue",
+        "yellow",
+        "red"
+      ],
+      "default": "public"
+    },
     "gallery": {
       "type": "string",
       "description": "Gallery name, e.g. 16U Summer 2027"
@@ -55,6 +72,66 @@
     "title"
   ],
   "rls": {
-    "read": {}
+    "read": {
+      "$or": [
+        {
+          "data.privacy": "public"
+        },
+        {
+          "data.privacy": {
+            "$exists": false
+          }
+        },
+        {
+          "$and": [
+            {
+              "data.privacy": "members"
+            },
+            {
+              "user_condition": {
+                "data.access_status": "approved"
+              }
+            }
+          ]
+        },
+        {
+          "$and": [
+            {
+              "data.privacy": "team"
+            },
+            {
+              "user_condition": {
+                "data.access_status": "approved"
+              }
+            },
+            {
+              "data.team": {
+                "$in": "{{user.data.linked_teams}}"
+              }
+            }
+          ]
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
   }
 }

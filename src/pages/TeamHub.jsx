@@ -8,6 +8,7 @@ import TeamHeader from "@/components/team/TeamHeader";
 import NextUpGrid from "@/components/team/NextUpGrid";
 import TeamLinks from "@/components/team/TeamLinks";
 import TeamStory from "@/components/team/TeamStory";
+import TeamPrivateSection from "@/components/team/TeamPrivateSection";
 import WeatherCard from "@/components/team/WeatherCard";
 import EventRow from "@/components/site/EventRow";
 import AnnouncementCard from "@/components/site/AnnouncementCard";
@@ -87,6 +88,7 @@ export default function TeamHub() {
         <NextUpGrid team={team} events={events} />
         <TeamLinks team={team} />
         <TeamStory team={team} />
+        <TeamPrivateSection team={team} />
 
         <div className="grid gap-8 lg:grid-cols-[1.45fr_1fr]">
           <div>

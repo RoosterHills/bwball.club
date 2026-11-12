@@ -1,17 +1,68 @@
 {
-  "properties": {
-    "role": {
-      "type": "string",
-      "description": "The role of the user in the app",
-      "enum": [
-        "admin",
-        "user"
-      ]
-    }
-  },
-  "required": [
-    "role"
-  ],
   "name": "User",
-  "type": "object"
+  "type": "object",
+  "properties": {
+    "access_level": {
+      "type": "string",
+      "enum": [
+        "fan",
+        "parent",
+        "player",
+        "coach",
+        "team_admin",
+        "org_admin"
+      ],
+      "enumColors": [
+        "blue",
+        "green",
+        "purple",
+        "yellow",
+        "pink",
+        "red"
+      ],
+      "default": "fan",
+      "rls": {
+        "update": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
+    },
+    "access_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "denied"
+      ],
+      "enumColors": [
+        "yellow",
+        "green",
+        "red"
+      ],
+      "default": "pending",
+      "rls": {
+        "update": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
+    },
+    "linked_teams": {
+      "type": "array",
+      "description": "Team record ids this member is linked to (parents, players, coaches).",
+      "items": {
+        "type": "string"
+      },
+      "rls": {
+        "update": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
+    }
+  }
 }
