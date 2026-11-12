@@ -23,29 +23,49 @@ export default function AuditPanel() {
   }
 
   return (
-    <div className="overflow-x-auto border border-border bg-card">
-      <table className="w-full min-w-[560px] text-sm">
-        <thead>
-          <tr className="border-b border-border bg-secondary/50 text-left">
-            <th className="eyebrow px-4 py-3 text-muted-foreground">When</th>
-            <th className="eyebrow px-4 py-3 text-muted-foreground">Action</th>
-            <th className="eyebrow px-4 py-3 text-muted-foreground">Area</th>
-            <th className="eyebrow px-4 py-3 text-muted-foreground">What</th>
-            <th className="eyebrow px-4 py-3 text-muted-foreground">Who</th>
-          </tr>
-        </thead>
-        <tbody>
-          {items.map((entry) => (
-            <tr key={entry.id} className="border-b border-border/70 last:border-0">
-              <td className="whitespace-nowrap px-4 py-3 text-muted-foreground">{when(entry.created_date)}</td>
-              <td className="px-4 py-3 font-medium">{entry.action}</td>
-              <td className="px-4 py-3 text-muted-foreground">{entry.entity_name}</td>
-              <td className="px-4 py-3 text-muted-foreground">{entry.record_label || "—"}</td>
-              <td className="px-4 py-3 text-muted-foreground">{entry.actor_email || "—"}</td>
+    <>
+      <ul className="space-y-2 sm:hidden">
+        {items.map((entry) => (
+          <li key={entry.id} className="border border-border bg-card p-4">
+            <div className="flex items-baseline justify-between gap-3">
+              <span className="text-sm font-semibold">{entry.action}</span>
+              <span className="eyebrow shrink-0 text-muted-foreground/60">
+                {entry.entity_name || "—"}
+              </span>
+            </div>
+            <p className="mt-1 text-xs text-muted-foreground">{entry.record_label || "—"}</p>
+            <p className="mt-2 text-[11px] text-muted-foreground/70">
+              {when(entry.created_date)}
+              {entry.actor_email ? ` · ${entry.actor_email}` : ""}
+            </p>
+          </li>
+        ))}
+      </ul>
+
+      <div className="hidden overflow-x-auto border border-border bg-card sm:block">
+        <table className="w-full min-w-[560px] text-sm">
+          <thead>
+            <tr className="border-b border-border bg-secondary/50 text-left">
+              <th className="eyebrow px-4 py-3 text-muted-foreground">When</th>
+              <th className="eyebrow px-4 py-3 text-muted-foreground">Action</th>
+              <th className="eyebrow px-4 py-3 text-muted-foreground">Area</th>
+              <th className="eyebrow px-4 py-3 text-muted-foreground">What</th>
+              <th className="eyebrow px-4 py-3 text-muted-foreground">Who</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {items.map((entry) => (
+              <tr key={entry.id} className="border-b border-border/70 last:border-0">
+                <td className="whitespace-nowrap px-4 py-3 text-muted-foreground">{when(entry.created_date)}</td>
+                <td className="px-4 py-3 font-medium">{entry.action}</td>
+                <td className="px-4 py-3 text-muted-foreground">{entry.entity_name}</td>
+                <td className="px-4 py-3 text-muted-foreground">{entry.record_label || "—"}</td>
+                <td className="px-4 py-3 text-muted-foreground">{entry.actor_email || "—"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 }

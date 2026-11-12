@@ -92,7 +92,7 @@ export default function TeamHub() {
 
         <div className="grid gap-8 lg:grid-cols-[1.45fr_1fr]">
           <div>
-            <div className="flex items-end justify-between border-t border-border pt-5">
+            <div className="flex flex-wrap items-end justify-between gap-2 border-t border-border pt-5">
               <h2 className="display text-2xl">Team schedule</h2>
               <Link to={`/schedule?team=${team.id}`} className={BTN.small}>
                 Open →
@@ -110,7 +110,7 @@ export default function TeamHub() {
           </div>
 
           <div>
-            <div className="flex items-end justify-between border-t border-border pt-5">
+            <div className="flex flex-wrap items-end justify-between gap-2 border-t border-border pt-5">
               <h2 className="display text-2xl">Team news</h2>
               <Link to="/news" className={BTN.small}>
                 All →
@@ -139,7 +139,7 @@ export default function TeamHub() {
 
         {teamResources.length ? (
           <div>
-            <div className="flex items-end justify-between border-t border-border pt-5">
+            <div className="flex flex-wrap items-end justify-between gap-2 border-t border-border pt-5">
               <h2 className="display text-2xl">Team resources</h2>
               <Link to="/parents" className={BTN.small}>
                 All resources →

@@ -31,7 +31,11 @@ export function useSiteContent() {
         setSettings(rows(settingsRes)[0] || null);
 
         const items = rows(navRes).filter((n) => n.visible !== false && n.href);
-        const header = items.filter((n) => (n.group || "header") === "header");
+        // The account link in the header already points at the member area,
+        // so a nav item for it would show the same destination twice.
+        const header = items.filter(
+          (n) => (n.group || "header") === "header" && !["/members", "/login"].includes(n.href)
+        );
         const footer = items.filter((n) => n.group === "footer");
         if (header.length) setHeaderNav(header.map(toNav));
         if (footer.length) setFooterNav(footer.map(toNav));

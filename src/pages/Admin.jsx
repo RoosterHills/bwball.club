@@ -166,14 +166,14 @@ export default function Admin() {
 
         <div className="mt-7 grid gap-6 lg:grid-cols-[215px_1fr]">
           <aside className="lg:sticky lg:top-20 lg:self-start">
-            <div className="no-scrollbar flex gap-3 overflow-x-auto pb-1 lg:flex-col lg:gap-5 lg:overflow-visible lg:pb-0">
+            <div className="flex flex-wrap gap-x-3 gap-y-2 pb-1 lg:flex-col lg:gap-5 lg:pb-0">
               {GROUP_ORDER.map((group) => {
                 const list = SECTIONS.filter((s) => s.group === group);
                 if (!list.length) return null;
                 return (
-                  <div key={group} className="shrink-0">
+                  <div key={group} className="min-w-0">
                     <p className="eyebrow hidden px-2 text-muted-foreground/60 lg:block">{group}</p>
-                    <div className="flex gap-1.5 lg:mt-2 lg:flex-col lg:gap-0.5">
+                    <div className="flex flex-wrap gap-1.5 lg:mt-2 lg:flex-col lg:flex-nowrap lg:gap-0.5">
                       {list.map((s) => (
                         <button
                           key={s.key}

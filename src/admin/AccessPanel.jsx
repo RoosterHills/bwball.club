@@ -98,7 +98,60 @@ export default function AccessPanel() {
 
       {error ? <p className="text-xs font-medium text-destructive">{error}</p> : null}
 
-      <div className="overflow-x-auto border border-border bg-card">
+      <div className="space-y-2 sm:hidden">
+        {pending.length ? (
+          pending.map((request) => (
+            <div key={request.id} className="border border-border bg-card p-4">
+              <p className="text-sm font-semibold leading-tight">{request.name}</p>
+              <p className="mt-0.5 break-all text-xs text-muted-foreground">{request.email}</p>
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                <label className="block">
+                  <span className="eyebrow text-muted-foreground/60">Grant</span>
+                  <select
+                    value={grant[request.id] || request.requested_level || "parent"}
+                    onChange={(e) => setGrant((prev) => ({ ...prev, [request.id]: e.target.value }))}
+                    className="mt-1 w-full border border-input bg-background px-2 py-1 text-xs outline-none focus:border-accent"
+                  >
+                    {GRANT_LEVELS.map((level) => (
+                      <option key={level} value={level}>
+                        {ACCESS_LABELS[level]}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <div>
+                  <span className="eyebrow text-muted-foreground/60">Players</span>
+                  <p className="mt-1 truncate text-xs text-muted-foreground">{request.players || "—"}</p>
+                </div>
+              </div>
+              <div className="mt-3 flex gap-2 border-t border-border/70 pt-3">
+                <button
+                  type="button"
+                  disabled={busy === request.id}
+                  onClick={() => approve(request)}
+                  className="flex-1 bg-primary px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-primary-foreground disabled:opacity-60"
+                >
+                  Approve
+                </button>
+                <button
+                  type="button"
+                  disabled={busy === request.id}
+                  onClick={() => deny(request)}
+                  className="flex-1 border border-border px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/70 hover:border-destructive hover:text-destructive disabled:opacity-60"
+                >
+                  Deny
+                </button>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="border border-border bg-card px-4 py-10 text-center text-xs text-muted-foreground">
+            No one is waiting for approval.
+          </div>
+        )}
+      </div>
+
+      <div className="hidden overflow-x-auto border border-border bg-card sm:block">
         <table className="w-full min-w-[640px] text-sm">
           <thead>
             <tr className="border-b border-border bg-secondary/50 text-left">

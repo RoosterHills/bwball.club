@@ -71,7 +71,7 @@ export default function Members() {
 
       <div className="shell space-y-10 py-10">
         <section>
-          <div className="flex items-end justify-between border-t border-border pt-5">
+          <div className="flex flex-wrap items-end justify-between gap-2 border-t border-border pt-5">
             <div>
               <p className="eyebrow text-muted-foreground flex items-center gap-2">
                 <Users className="h-3.5 w-3.5" /> Rosters
@@ -81,28 +81,49 @@ export default function Members() {
             <span className="num text-xs text-muted-foreground">{roster.length}</span>
           </div>
           {roster.length ? (
-            <div className="mt-3 overflow-x-auto border border-border bg-card">
-              <table className="w-full min-w-[420px] text-sm">
-                <thead>
-                  <tr className="border-b border-border bg-secondary/50 text-left">
-                    <th className="eyebrow px-4 py-3 text-muted-foreground">Player</th>
-                    <th className="eyebrow px-4 py-3 text-muted-foreground">Team</th>
-                    <th className="eyebrow px-4 py-3 text-muted-foreground">#</th>
-                    <th className="eyebrow px-4 py-3 text-muted-foreground">Positions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {roster.map((player) => (
-                    <tr key={player.id} className="border-b border-border/70 last:border-0">
-                      <td className="px-4 py-3 font-medium">{player.name}</td>
-                      <td className="px-4 py-3 text-muted-foreground">{teamName(player.team)}</td>
-                      <td className="num px-4 py-3 text-muted-foreground">{player.jersey_number || "—"}</td>
-                      <td className="px-4 py-3 text-muted-foreground">{player.positions || "—"}</td>
+            <>
+              <div className="mt-3 space-y-2 sm:hidden">
+                {roster.map((player) => (
+                  <div key={player.id} className="border border-border bg-card px-4 py-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <p className="text-sm font-semibold leading-tight">{player.name}</p>
+                      <span className="num shrink-0 text-xs text-muted-foreground">
+                        #{player.jersey_number || "—"}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-xs text-muted-foreground">{teamName(player.team)}</p>
+                    {player.positions ? (
+                      <p className="mt-0.5 text-[11px] uppercase tracking-[0.1em] text-muted-foreground/80">
+                        {player.positions}
+                      </p>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-3 hidden overflow-x-auto border border-border bg-card sm:block">
+                <table className="w-full min-w-[420px] text-sm">
+                  <thead>
+                    <tr className="border-b border-border bg-secondary/50 text-left">
+                      <th className="eyebrow px-4 py-3 text-muted-foreground">Player</th>
+                      <th className="eyebrow px-4 py-3 text-muted-foreground">Team</th>
+                      <th className="eyebrow px-4 py-3 text-muted-foreground">#</th>
+                      <th className="eyebrow px-4 py-3 text-muted-foreground">Positions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {roster.map((player) => (
+                      <tr key={player.id} className="border-b border-border/70 last:border-0">
+                        <td className="px-4 py-3 font-medium">{player.name}</td>
+                        <td className="px-4 py-3 text-muted-foreground">{teamName(player.team)}</td>
+                        <td className="num px-4 py-3 text-muted-foreground">{player.jersey_number || "—"}</td>
+                        <td className="px-4 py-3 text-muted-foreground">{player.positions || "—"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
           ) : (
             <div className="mt-3">
               <EmptyBlock>Rosters open up once your account is linked to a team.</EmptyBlock>
@@ -111,7 +132,7 @@ export default function Members() {
         </section>
 
         <section>
-          <div className="flex items-end justify-between border-t border-border pt-5">
+          <div className="flex flex-wrap items-end justify-between gap-2 border-t border-border pt-5">
             <div>
               <p className="eyebrow text-muted-foreground flex items-center gap-2">
                 <ImageIcon className="h-3.5 w-3.5" /> Private galleries
@@ -153,7 +174,7 @@ export default function Members() {
         </section>
 
         <section>
-          <div className="flex items-end justify-between border-t border-border pt-5">
+          <div className="flex flex-wrap items-end justify-between gap-2 border-t border-border pt-5">
             <div>
               <p className="eyebrow text-muted-foreground flex items-center gap-2">
                 <FileText className="h-3.5 w-3.5" /> Documents

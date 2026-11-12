@@ -9,6 +9,81 @@ const STATUSES = ["pending", "approved", "denied"];
 
 const rows = (res) => (Array.isArray(res) ? res : res?.items ?? []);
 
+const selectClass = "w-full border border-input bg-background px-2 py-1 text-xs outline-none focus:border-accent";
+
+function RoleSelect({ user, onChange }) {
+  return (
+    <select
+      value={user.role || "user"}
+      onChange={(e) => onChange(user, { role: e.target.value })}
+      className={selectClass}
+    >
+      <option value="user">User</option>
+      <option value="admin">Admin</option>
+    </select>
+  );
+}
+
+function LevelSelect({ user, onChange }) {
+  return (
+    <select
+      value={user.access_level || "fan"}
+      onChange={(e) => onChange(user, { access_level: e.target.value })}
+      className={selectClass}
+    >
+      {LEVELS.map((level) => (
+        <option key={level} value={level}>
+          {level.replace(/_/g, " ")}
+        </option>
+      ))}
+    </select>
+  );
+}
+
+function StatusSelect({ user, onChange }) {
+  return (
+    <select
+      value={user.access_status || "pending"}
+      onChange={(e) => onChange(user, { access_status: e.target.value })}
+      className={selectClass}
+    >
+      {STATUSES.map((status) => (
+        <option key={status} value={status}>
+          {status}
+        </option>
+      ))}
+    </select>
+  );
+}
+
+function TeamSelect({ user, teams, onChange }) {
+  return (
+    <select
+      value={(user.linked_teams || [])[0] || ""}
+      onChange={(e) =>
+        onChange(user, { linked_teams: e.target.value ? [e.target.value] : [] })
+      }
+      className={selectClass}
+    >
+      <option value="">No team</option>
+      {teams.map((team) => (
+        <option key={team.id} value={team.id}>
+          {[team.age_group, team.name].filter(Boolean).join(" · ")}
+        </option>
+      ))}
+    </select>
+  );
+}
+
+function Field({ label, children }) {
+  return (
+    <label className="block">
+      <span className="eyebrow text-muted-foreground/60">{label}</span>
+      <span className="mt-1 block">{children}</span>
+    </label>
+  );
+}
+
 export default function UsersPanel() {
   const { toast } = useToast();
   const { items: teams } = useCollection("Team", "sort_order");
@@ -113,90 +188,77 @@ export default function UsersPanel() {
 
       {error ? <p className="text-xs font-medium text-accent">{error}</p> : null}
 
-      <div className="overflow-x-auto border border-border bg-card">
-        {loading ? (
-          <div className="flex items-center justify-center py-16">
-            <span className="h-4 w-4 animate-spin rounded-full border-2 border-border border-t-accent" />
+      {loading ? (
+        <div className="flex items-center justify-center border border-border bg-card py-16">
+          <span className="h-4 w-4 animate-spin rounded-full border-2 border-border border-t-accent" />
+        </div>
+      ) : users.length ? (
+        <>
+          <div className="space-y-2 sm:hidden">
+            {users.map((user) => (
+              <div key={user.id} className="border border-border bg-card p-4">
+                <p className="text-sm font-semibold leading-tight">{user.full_name || "—"}</p>
+                <p className="mt-0.5 break-all text-xs text-muted-foreground">{user.email}</p>
+                <div className="mt-3 grid grid-cols-2 gap-2">
+                  <Field label="Role">
+                    <RoleSelect user={user} onChange={changeRole} />
+                  </Field>
+                  <Field label="Access">
+                    <LevelSelect user={user} onChange={changeAccess} />
+                  </Field>
+                  <Field label="Status">
+                    <StatusSelect user={user} onChange={changeAccess} />
+                  </Field>
+                  <Field label="Team">
+                    <TeamSelect user={user} teams={teams} onChange={changeAccess} />
+                  </Field>
+                </div>
+              </div>
+            ))}
           </div>
-        ) : users.length ? (
-          <table className="w-full min-w-[520px] text-sm">
-            <thead>
-              <tr className="border-b border-border bg-secondary/50 text-left">
-                <th className="eyebrow px-4 py-3 text-muted-foreground">Person</th>
-                <th className="eyebrow px-4 py-3 text-muted-foreground">Email</th>
-                <th className="eyebrow px-4 py-3 text-muted-foreground">Role</th>
-                <th className="eyebrow px-4 py-3 text-muted-foreground">Access</th>
-                <th className="eyebrow px-4 py-3 text-muted-foreground">Status</th>
-                <th className="eyebrow px-4 py-3 text-muted-foreground">Team link</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((user) => (
-                <tr key={user.id} className="border-b border-border/70 last:border-0">
-                  <td className="px-4 py-3 font-medium">{user.full_name || "—"}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{user.email}</td>
-                  <td className="px-4 py-3">
-                    <select
-                      value={user.role || "user"}
-                      onChange={(e) => changeRole(user, e.target.value)}
-                      className="border border-input bg-background px-2 py-1 text-xs outline-none focus:border-accent"
-                    >
-                      <option value="user">User</option>
-                      <option value="admin">Admin</option>
-                    </select>
-                  </td>
-                  <td className="px-4 py-3">
-                    <select
-                      value={user.access_level || "fan"}
-                      onChange={(e) => changeAccess(user, { access_level: e.target.value })}
-                      className="border border-input bg-background px-2 py-1 text-xs outline-none focus:border-accent"
-                    >
-                      {LEVELS.map((level) => (
-                        <option key={level} value={level}>
-                          {level.replace(/_/g, " ")}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
-                  <td className="px-4 py-3">
-                    <select
-                      value={user.access_status || "pending"}
-                      onChange={(e) => changeAccess(user, { access_status: e.target.value })}
-                      className="border border-input bg-background px-2 py-1 text-xs outline-none focus:border-accent"
-                    >
-                      {STATUSES.map((status) => (
-                        <option key={status} value={status}>
-                          {status}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
-                  <td className="px-4 py-3">
-                    <select
-                      value={(user.linked_teams || [])[0] || ""}
-                      onChange={(e) =>
-                        changeAccess(user, { linked_teams: e.target.value ? [e.target.value] : [] })
-                      }
-                      className="border border-input bg-background px-2 py-1 text-xs outline-none focus:border-accent"
-                    >
-                      <option value="">No team</option>
-                      {teams.map((team) => (
-                        <option key={team.id} value={team.id}>
-                          {[team.age_group, team.name].filter(Boolean).join(" · ")}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
+
+          <div className="hidden overflow-x-auto border border-border bg-card sm:block">
+            <table className="w-full min-w-[520px] text-sm">
+              <thead>
+                <tr className="border-b border-border bg-secondary/50 text-left">
+                  <th className="eyebrow px-4 py-3 text-muted-foreground">Person</th>
+                  <th className="eyebrow px-4 py-3 text-muted-foreground">Email</th>
+                  <th className="eyebrow px-4 py-3 text-muted-foreground">Role</th>
+                  <th className="eyebrow px-4 py-3 text-muted-foreground">Access</th>
+                  <th className="eyebrow px-4 py-3 text-muted-foreground">Status</th>
+                  <th className="eyebrow px-4 py-3 text-muted-foreground">Team link</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
+              </thead>
+              <tbody>
+                {users.map((user) => (
+                  <tr key={user.id} className="border-b border-border/70 last:border-0">
+                    <td className="px-4 py-3 font-medium">{user.full_name || "—"}</td>
+                    <td className="px-4 py-3 text-muted-foreground">{user.email}</td>
+                    <td className="px-4 py-3">
+                      <RoleSelect user={user} onChange={changeRole} />
+                    </td>
+                    <td className="px-4 py-3">
+                      <LevelSelect user={user} onChange={changeAccess} />
+                    </td>
+                    <td className="px-4 py-3">
+                      <StatusSelect user={user} onChange={changeAccess} />
+                    </td>
+                    <td className="px-4 py-3">
+                      <TeamSelect user={user} teams={teams} onChange={changeAccess} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      ) : (
+        <div className="border border-border bg-card">
           <p className="px-4 py-12 text-center text-sm text-muted-foreground">
             No one has joined yet. Send the first invitation above.
           </p>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
