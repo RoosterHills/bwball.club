@@ -1,0 +1,137 @@
+import { useEffect, useState } from "react";
+import { base44 } from "@/api/base44Client";
+import { useToast } from "@/components/ui/use-toast";
+import { logAudit } from "@/lib/audit";
+
+const rows = (res) => (Array.isArray(res) ? res : res?.items ?? []);
+
+export default function UsersPanel() {
+  const { toast } = useToast();
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState("user");
+  const [busy, setBusy] = useState(false);
+
+  const load = async () => {
+    setLoading(true);
+    try {
+      const res = await base44.entities.User.list();
+      setUsers(rows(res));
+      setError("");
+    } catch {
+      setError("Sign in as an administrator to manage users and roles.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  const changeRole = async (user, next) => {
+    try {
+      await base44.entities.User.update(user.id, { role: next });
+      logAudit({ action: "Role changed", entity: "User", label: `${user.email} → ${next}` });
+      toast({ title: "Role updated" });
+      await load();
+    } catch {
+      setError("Could not change that role.");
+    }
+  };
+
+  const invite = async (event) => {
+    event.preventDefault();
+    const address = email.trim();
+    if (!address) return;
+    setBusy(true);
+    setError("");
+    try {
+      await base44.users.inviteUser(address, role);
+      logAudit({ action: "Invited", entity: "User", label: `${address} as ${role}` });
+      toast({ title: "Invitation sent", description: address });
+      setEmail("");
+    } catch {
+      setError("Could not send that invitation. You may need to be signed in as an admin.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="space-y-5">
+      <div className="border border-border bg-card p-5">
+        <p className="eyebrow text-accent">Add someone</p>
+        <h3 className="display mt-2 text-xl">Invite a coach, board member, or helper</h3>
+        <p className="mt-1.5 text-xs text-muted-foreground">
+          Admins can manage everything in this dashboard. Regular users can sign in but cannot edit.
+        </p>
+        <form onSubmit={invite} className="mt-4 flex flex-col gap-2 sm:flex-row">
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="coach@example.com"
+            className="w-full flex-1 border border-input bg-background px-3 py-2 text-sm outline-none focus:border-accent"
+          />
+          <select
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            className="border border-input bg-background px-3 py-2 text-sm outline-none focus:border-accent"
+          >
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+          </select>
+          <button type="submit" disabled={busy} className="bg-primary px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-primary-foreground disabled:opacity-60">
+            {busy ? "Sending…" : "Send invite"}
+          </button>
+        </form>
+      </div>
+
+      {error ? <p className="text-xs font-medium text-accent">{error}</p> : null}
+
+      <div className="overflow-x-auto border border-border bg-card">
+        {loading ? (
+          <div className="flex items-center justify-center py-16">
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-border border-t-accent" />
+          </div>
+        ) : users.length ? (
+          <table className="w-full min-w-[520px] text-sm">
+            <thead>
+              <tr className="border-b border-border bg-secondary/50 text-left">
+                <th className="eyebrow px-4 py-3 text-muted-foreground">Person</th>
+                <th className="eyebrow px-4 py-3 text-muted-foreground">Email</th>
+                <th className="eyebrow px-4 py-3 text-muted-foreground">Role</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((user) => (
+                <tr key={user.id} className="border-b border-border/70 last:border-0">
+                  <td className="px-4 py-3 font-medium">{user.full_name || "—"}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{user.email}</td>
+                  <td className="px-4 py-3">
+                    <select
+                      value={user.role || "user"}
+                      onChange={(e) => changeRole(user, e.target.value)}
+                      className="border border-input bg-background px-2 py-1 text-xs outline-none focus:border-accent"
+                    >
+                      <option value="user">User</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p className="px-4 py-12 text-center text-sm text-muted-foreground">
+            No one has joined yet. Send the first invitation above.
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}

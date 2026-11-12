@@ -41,7 +41,7 @@ function TeamHubButton({ team, brand, sponsors, nextEvent, delay }) {
   );
 }
 
-export default function Hero({ teams = [], brands = [], sponsors = [], nextEventFor, heroImage }) {
+export default function Hero({ teams = [], brands = [], sponsors = [], nextEventFor, heroImage, settings }) {
   const hero = heroImage || MEDIA.hero;
 
   return (
@@ -63,22 +63,44 @@ export default function Hero({ teams = [], brands = [], sponsors = [], nextEvent
       <div className="shell relative pb-12 pt-12 sm:pb-16 sm:pt-16 lg:pb-20 lg:pt-20">
         <div className="grid items-end gap-10 lg:grid-cols-[1.1fr_0.9fr]">
           <div>
-            <p className="eyebrow rise text-accent">Sunbury, Ohio · Youth Baseball</p>
+            <p className="eyebrow rise text-accent">
+              {settings?.hero_eyebrow || "Sunbury, Ohio · Youth Baseball"}
+            </p>
             <h1 className="display mt-4 text-[13vw] leading-[0.84] sm:text-[4.6rem] lg:text-[5.6rem]">
               <span className="rise block" style={{ "--rise-delay": "60ms" }}>
-                BIG WALNUT
+                {settings?.hero_line_1 || "BIG WALNUT"}
               </span>
               <span className="rise block text-accent" style={{ "--rise-delay": "140ms" }}>
-                BASEBALL
+                {settings?.hero_line_2 || "BASEBALL"}
               </span>
             </h1>
             <p
               className="rise mt-5 max-w-md text-sm leading-relaxed text-primary-foreground/65 sm:text-[15px]"
               style={{ "--rise-delay": "220ms" }}
             >
-              The home for our players, coaches, families, and community — schedules, scores,
-              sign-ups, and answers, all in one place.
+              {settings?.hero_description ||
+                "The home for our players, coaches, families, and community — schedules, scores, sign-ups, and answers, all in one place."}
             </p>
+            {settings?.primary_cta_label || settings?.secondary_cta_label ? (
+              <div className="rise mt-6 flex flex-wrap gap-2.5" style={{ "--rise-delay": "280ms" }}>
+                {settings.primary_cta_label && settings.primary_cta_link ? (
+                  <Link
+                    to={settings.primary_cta_link}
+                    className="bg-accent px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-accent-foreground transition-opacity hover:opacity-90"
+                  >
+                    {settings.primary_cta_label}
+                  </Link>
+                ) : null}
+                {settings.secondary_cta_label && settings.secondary_cta_link ? (
+                  <Link
+                    to={settings.secondary_cta_link}
+                    className="border border-primary-foreground/25 px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-primary-foreground/85 transition-colors hover:border-accent hover:text-accent"
+                  >
+                    {settings.secondary_cta_label}
+                  </Link>
+                ) : null}
+              </div>
+            ) : null}
           </div>
 
           <div className="grid gap-2.5">

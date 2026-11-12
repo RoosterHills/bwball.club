@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useToast } from "@/components/ui/use-toast";
 import EntityForm from "@/admin/EntityForm";
-import { ORG_FIELDS } from "@/admin/collections";
+import { logAudit } from "@/lib/audit";
 
 const rows = (res) => (Array.isArray(res) ? res : res?.items ?? []);
 
-export default function OrganizationPanel() {
+// Single-record settings panel — organization details or site-wide website content.
+export default function SettingsPanel({ entity, fields, intro, savedMessage = "Saved" }) {
   const { toast } = useToast();
   const [record, setRecord] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -16,23 +17,28 @@ export default function OrganizationPanel() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await base44.entities.Organization.list("-created_date", 1);
+        const res = await base44.entities[entity].list("-created_date", 1);
         setRecord(rows(res)[0] || null);
       } finally {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [entity]);
 
   const save = async (values) => {
     setError("");
     setSaving(true);
     try {
       const saved = record?.id
-        ? await base44.entities.Organization.update(record.id, values)
-        : await base44.entities.Organization.create(values);
+        ? await base44.entities[entity].update(record.id, values)
+        : await base44.entities[entity].create(values);
       setRecord(saved || values);
-      toast({ title: "Organization updated" });
+      logAudit({
+        action: record?.id ? "Updated" : "Created",
+        entity,
+        label: values.site_name || values.name || entity,
+      });
+      toast({ title: savedMessage });
     } catch {
       setError("Could not save. Please try again.");
     } finally {
@@ -50,12 +56,10 @@ export default function OrganizationPanel() {
 
   return (
     <div className="border border-border bg-card p-5 sm:p-6">
-      <p className="mb-5 text-xs text-muted-foreground">
-        These details power the hero, footer contact block, and organization identity across the site.
-      </p>
+      {intro ? <p className="mb-5 max-w-2xl text-xs leading-relaxed text-muted-foreground">{intro}</p> : null}
       <EntityForm
         key={record?.id || "new"}
-        fields={ORG_FIELDS}
+        fields={fields}
         record={record}
         onSubmit={save}
         onCancel={() => window.location.reload()}

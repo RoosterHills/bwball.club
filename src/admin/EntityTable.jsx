@@ -1,3 +1,4 @@
+import { Image } from "@/components/ui/image";
 import { EmptyBlock } from "@/components/site/Loading";
 import { fmtDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -47,7 +48,18 @@ export default function EntityTable({ collection, items, loading, onEdit, onDele
             <tr key={item.id} className="border-b border-border/70 last:border-0">
               {collection.columns.map((col, index) => (
                 <td key={col.key} className="px-4 py-3 align-middle">
-                  {col.type === "bool" ? (
+                  {col.type === "image" ? (
+                    item[col.key] ? (
+                      <Image
+                        src={item[col.key]}
+                        alt=""
+                        fittingType="fill"
+                        className="h-10 w-14 rounded-[3px] object-cover"
+                      />
+                    ) : (
+                      <span className="text-muted-foreground">—</span>
+                    )
+                  ) : col.type === "bool" ? (
                     <span
                       className={cn(
                         "inline-block h-2 w-2 rounded-full",

@@ -3,7 +3,7 @@ import Section from "@/components/site/Section";
 import AnnouncementCard from "@/components/site/AnnouncementCard";
 import { teamNameMap } from "@/lib/selectors";
 
-export default function LatestNews({ announcements = [], teams = [] }) {
+export default function LatestNews({ announcements = [], teams = [], title }) {
   const names = teamNameMap(teams);
   const latest = [...announcements]
     .sort(
@@ -16,7 +16,7 @@ export default function LatestNews({ announcements = [], teams = [] }) {
   return (
     <Section
       eyebrow="From the dugout"
-      title="Latest announcements"
+      title={title || "Latest announcements"}
       action={
         <Link
           to="/news"

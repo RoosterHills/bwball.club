@@ -4,13 +4,13 @@ import TeamCard from "@/components/site/TeamCard";
 import { nextEventFor as findNext } from "@/lib/selectors";
 import { brandFor } from "@/lib/brand";
 
-export default function TeamGrid({ teams = [], brands = [], sponsors = [], events = [] }) {
+export default function TeamGrid({ teams = [], brands = [], sponsors = [], events = [], title, intro }) {
   return (
     <Section
       id="teams"
       eyebrow="Team hubs"
-      title="Your team, one tap away"
-      intro="Each team has its own hub with the schedule, roster, live stream, photos, and coach contacts."
+      title={title || "Your team, one tap away"}
+      intro={intro || "Each team has its own hub with the schedule, roster, live stream, photos, and coach contacts."}
       action={
         <Link
           to="/schedule"

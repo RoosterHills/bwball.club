@@ -2,20 +2,15 @@ import { useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useSiteContent } from "@/hooks/useSiteContent";
 
-const NAV = [
-  { label: "Schedule", to: "/schedule" },
-  { label: "Register", to: "/register" },
-  { label: "GameChanger", to: "/gamechanger" },
-  { label: "Volunteer", to: "/volunteer" },
-  { label: "Parents", to: "/parents" },
-  { label: "Sponsors", to: "/sponsors" },
-  { label: "Coaches", to: "/coaches" },
-];
+const isInternal = (to) => String(to || "").startsWith("/");
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
+  const { headerNav, settings } = useSiteContent();
+  const siteName = settings?.site_name || "BWBALL.CLUB";
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/80 bg-background/90 backdrop-blur-md">
@@ -24,26 +19,36 @@ export default function Header() {
           <span className="num flex h-8 w-8 items-center justify-center rounded-[4px] bg-accent text-[11px] font-semibold text-accent-foreground">
             BW
           </span>
-          <span className="display text-[17px] tracking-tight">
-            BWBALL<span className="text-accent">.</span>CLUB
-          </span>
+          <span className="display text-[17px] tracking-tight">{siteName}</span>
         </Link>
 
         <nav className="hidden items-center gap-6 xl:flex">
-          {NAV.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) =>
-                cn(
-                  "eyebrow transition-colors hover:text-foreground",
-                  isActive ? "text-foreground" : "text-foreground/55"
-                )
-              }
-            >
-              {item.label}
-            </NavLink>
-          ))}
+          {headerNav.map((item) =>
+            isInternal(item.to) ? (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  cn(
+                    "eyebrow transition-colors hover:text-foreground",
+                    isActive ? "text-foreground" : "text-foreground/55"
+                  )
+                }
+              >
+                {item.label}
+              </NavLink>
+            ) : (
+              <a
+                key={item.to}
+                href={item.to}
+                target="_blank"
+                rel="noreferrer"
+                className="eyebrow text-foreground/55 transition-colors hover:text-foreground"
+              >
+                {item.label}
+              </a>
+            )
+          )}
         </nav>
 
         <div className="flex items-center gap-3">
@@ -67,19 +72,32 @@ export default function Header() {
       {open ? (
         <div className="border-t border-border bg-background xl:hidden">
           <div className="shell grid grid-cols-2 gap-x-4 gap-y-1 py-4">
-            {NAV.map((item) => (
-              <Link
-                key={item.to}
-                to={item.to}
-                onClick={() => setOpen(false)}
-                className={cn(
-                  "border-b border-border/60 py-2.5 text-sm font-medium",
-                  pathname === item.to ? "text-accent" : "text-foreground/75"
-                )}
-              >
-                {item.label}
-              </Link>
-            ))}
+            {headerNav.map((item) =>
+              isInternal(item.to) ? (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  onClick={() => setOpen(false)}
+                  className={cn(
+                    "border-b border-border/60 py-2.5 text-sm font-medium",
+                    pathname === item.to ? "text-accent" : "text-foreground/75"
+                  )}
+                >
+                  {item.label}
+                </Link>
+              ) : (
+                <a
+                  key={item.to}
+                  href={item.to}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={() => setOpen(false)}
+                  className="border-b border-border/60 py-2.5 text-sm font-medium text-foreground/75"
+                >
+                  {item.label}
+                </a>
+              )
+            )}
             <Link
               to="/admin"
               onClick={() => setOpen(false)}

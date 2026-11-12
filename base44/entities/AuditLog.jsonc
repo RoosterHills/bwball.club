@@ -1,0 +1,28 @@
+{
+  "name": "AuditLog",
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "description": "Created, updated, deleted, or restored"
+    },
+    "entity_name": {
+      "type": "string"
+    },
+    "record_label": {
+      "type": "string"
+    },
+    "actor_email": {
+      "type": "string"
+    },
+    "note": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "action"
+  ],
+  "rls": {
+    "read": {}
+  }
+}

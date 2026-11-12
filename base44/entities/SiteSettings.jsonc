@@ -1,0 +1,90 @@
+{
+  "name": "SiteSettings",
+  "type": "object",
+  "properties": {
+    "site_name": {
+      "type": "string",
+      "description": "Name shown in the header, footer, and page titles"
+    },
+    "tagline": {
+      "type": "string"
+    },
+    "hero_eyebrow": {
+      "type": "string",
+      "description": "Small line above the homepage title, e.g. Sunbury, Ohio \u00b7 Youth Baseball"
+    },
+    "hero_line_1": {
+      "type": "string",
+      "description": "First line of the homepage title"
+    },
+    "hero_line_2": {
+      "type": "string",
+      "description": "Second line of the homepage title, shown in the accent color"
+    },
+    "hero_description": {
+      "type": "string"
+    },
+    "primary_cta_label": {
+      "type": "string"
+    },
+    "primary_cta_link": {
+      "type": "string"
+    },
+    "secondary_cta_label": {
+      "type": "string"
+    },
+    "secondary_cta_link": {
+      "type": "string"
+    },
+    "teams_title": {
+      "type": "string"
+    },
+    "teams_intro": {
+      "type": "string"
+    },
+    "news_title": {
+      "type": "string"
+    },
+    "sponsors_title": {
+      "type": "string"
+    },
+    "sponsors_intro": {
+      "type": "string"
+    },
+    "footer_about": {
+      "type": "string"
+    },
+    "footer_note": {
+      "type": "string"
+    },
+    "contact_email": {
+      "type": "string"
+    },
+    "contact_phone": {
+      "type": "string"
+    },
+    "contact_address": {
+      "type": "string"
+    },
+    "facebook_url": {
+      "type": "string"
+    },
+    "instagram_url": {
+      "type": "string"
+    },
+    "gamechanger_url": {
+      "type": "string",
+      "description": "Organization-wide GameChanger page"
+    },
+    "livestream_url": {
+      "type": "string",
+      "description": "Organization-wide livestream page"
+    }
+  },
+  "required": [
+    "site_name"
+  ],
+  "rls": {
+    "read": {}
+  }
+}

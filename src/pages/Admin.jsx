@@ -4,24 +4,80 @@ import { Plus } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useToast } from "@/components/ui/use-toast";
 import { useCollection } from "@/hooks/useSiteData";
-import { COLLECTIONS } from "@/admin/collections";
+import { COLLECTIONS, SITE_FIELDS, ORG_FIELDS } from "@/admin/collections";
 import EntityTable from "@/admin/EntityTable";
 import EntityForm from "@/admin/EntityForm";
-import OrganizationPanel from "@/admin/OrganizationPanel";
+import SettingsPanel from "@/admin/SettingsPanel";
+import UsersPanel from "@/admin/UsersPanel";
+import AuditPanel from "@/admin/AuditPanel";
+import ArchivedPanel from "@/admin/ArchivedPanel";
+import IntegrationsPanel from "@/admin/IntegrationsPanel";
+import { logAudit } from "@/lib/audit";
 import { BTN } from "@/lib/styles";
 import { cn } from "@/lib/utils";
 
-const TABS = [{ key: "organization", label: "Organization" }, ...COLLECTIONS.map((c) => ({ key: c.key, label: c.label }))];
+const PANEL_SECTIONS = [
+  { key: "org", label: "Organization settings", group: "Website" },
+  { key: "website", label: "Website & homepage", group: "Website" },
+  { key: "users", label: "Users & roles", group: "People" },
+  { key: "integrations", label: "Integrations", group: "System" },
+  { key: "archive", label: "Archived content", group: "System" },
+  { key: "audit", label: "Audit log", group: "System" },
+];
+
+const GROUP_OF = {
+  teams: "Program",
+  brands: "Program",
+  sports: "Program",
+  seasons: "Program",
+  sponsors: "Program",
+  events: "Season ops",
+  announcements: "Season ops",
+  registrations: "Season ops",
+  volunteer: "Season ops",
+  signups: "Season ops",
+  resources: "Season ops",
+  inquiries: "Season ops",
+  media: "Media",
+  nav: "Website",
+};
+
+const GROUP_ORDER = ["Program", "Season ops", "Media", "Website", "People", "System"];
+
+const SECTIONS = [
+  ...COLLECTIONS.map((c) => ({
+    key: c.key,
+    label: c.label,
+    type: "collection",
+    group: GROUP_OF[c.key] || "Program",
+  })),
+  ...PANEL_SECTIONS.map((p) => ({ ...p, type: "panel" })),
+];
+
+const labelFor = (collection, values) =>
+  values.name ||
+  values.title ||
+  values.label ||
+  values.brand_name ||
+  values.company ||
+  values.email ||
+  collection.entity;
 
 export default function Admin() {
   const { toast } = useToast();
-  const [tab, setTab] = useState("teams");
+  const [sectionKey, setSectionKey] = useState("teams");
   const [editing, setEditing] = useState(null);
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState("");
 
-  const collection = COLLECTIONS.find((c) => c.key === tab) || COLLECTIONS[0];
-  const { items, loading, reload } = useCollection(collection.entity, collection.sort);
+  const section = SECTIONS.find((s) => s.key === sectionKey) || SECTIONS[0];
+  const collection =
+    section.type === "collection" ? COLLECTIONS.find((c) => c.key === section.key) : null;
+
+  const { items, loading, reload } = useCollection(
+    collection?.entity || "Sport",
+    collection?.sort || "sort_order"
+  );
   const { items: teamList } = useCollection("Team", "sort_order");
   const { items: sponsorList } = useCollection("Sponsor", "name");
   const { items: seasonList } = useCollection("Season", "-created_date");
@@ -42,6 +98,12 @@ export default function Admin() {
     })),
   };
 
+  const openSection = (key) => {
+    setSectionKey(key);
+    setEditing(null);
+    setFormError("");
+  };
+
   const closeForm = () => {
     setEditing(null);
     setFormError("");
@@ -53,6 +115,11 @@ export default function Admin() {
     try {
       if (editing?.id) await base44.entities[collection.entity].update(editing.id, values);
       else await base44.entities[collection.entity].create(values);
+      logAudit({
+        action: editing?.id ? "Updated" : "Created",
+        entity: collection.entity,
+        label: labelFor(collection, values),
+      });
       closeForm();
       await reload();
       toast({ title: `${collection.label} saved` });
@@ -67,6 +134,7 @@ export default function Admin() {
     if (!window.confirm("Delete this entry? This can't be undone.")) return;
     try {
       await base44.entities[collection.entity].delete(item.id);
+      logAudit({ action: "Deleted", entity: collection.entity, label: labelFor(collection, item) });
       await reload();
       toast({ title: "Deleted" });
     } catch {
@@ -79,50 +147,63 @@ export default function Admin() {
       <div className="shell py-8 sm:py-10">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="eyebrow text-accent">Admin dashboard</p>
+            <p className="eyebrow text-accent">Super admin</p>
             <h1 className="display mt-2 text-3xl sm:text-4xl">Program control room</h1>
+            <p className="mt-2 max-w-xl text-xs leading-relaxed text-muted-foreground">
+              Everything visitors see is edited here — teams, brands, sponsors, schedules, news,
+              registrations, documents, media, navigation, and site copy.
+            </p>
           </div>
           <Link to="/" className={BTN.ghost}>
             View site
           </Link>
         </div>
 
-        <p className="mt-3 max-w-2xl text-xs leading-relaxed text-muted-foreground">
-          Everything on the site is edited here — teams, sponsors, events, news, registrations,
-          volunteers, and documents. Currently anyone who has this link can edit, so add a login
-          before sharing the site publicly.
-        </p>
+        <div className="mt-7 grid gap-6 lg:grid-cols-[215px_1fr]">
+          <aside className="lg:sticky lg:top-20 lg:self-start">
+            <div className="no-scrollbar flex gap-3 overflow-x-auto pb-1 lg:flex-col lg:gap-5 lg:overflow-visible lg:pb-0">
+              {GROUP_ORDER.map((group) => {
+                const list = SECTIONS.filter((s) => s.group === group);
+                if (!list.length) return null;
+                return (
+                  <div key={group} className="shrink-0">
+                    <p className="eyebrow hidden px-2 text-muted-foreground/60 lg:block">{group}</p>
+                    <div className="flex gap-1.5 lg:mt-2 lg:flex-col lg:gap-0.5">
+                      {list.map((s) => (
+                        <button
+                          key={s.key}
+                          type="button"
+                          onClick={() => openSection(s.key)}
+                          className={cn(
+                            "whitespace-nowrap rounded-[3px] px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-[0.12em] transition-colors lg:w-full",
+                            sectionKey === s.key
+                              ? "bg-primary text-primary-foreground"
+                              : "text-foreground/60 hover:bg-card hover:text-accent"
+                          )}
+                        >
+                          {s.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </aside>
 
-        <div className="no-scrollbar mt-6 flex gap-2 overflow-x-auto pb-1">
-          {TABS.map((t) => (
-            <button
-              key={t.key}
-              type="button"
-              onClick={() => {
-                setTab(t.key);
-                closeForm();
-              }}
-              className={cn(
-                "shrink-0 rounded-[3px] border px-3 py-2 font-mono text-[10px] uppercase tracking-[0.14em] transition-colors",
-                tab === t.key
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border bg-card text-foreground/60 hover:border-accent hover:text-accent"
-              )}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
-
-        <div className="mt-6">
-          {tab === "organization" ? (
-            <OrganizationPanel />
-          ) : (
-            <>
-              <div className="mb-3 flex items-center justify-between gap-3">
-                <p className="text-xs text-muted-foreground">
-                  {loading ? "Loading…" : `${items.length} ${items.length === 1 ? "entry" : "entries"}`}
-                </p>
+          <div className="min-w-0">
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h2 className="display text-2xl">{section.label}</h2>
+                {collection ? (
+                  <p className="text-xs text-muted-foreground">
+                    {loading
+                      ? "Loading…"
+                      : `${items.length} ${items.length === 1 ? "entry" : "entries"}`}
+                  </p>
+                ) : null}
+              </div>
+              {collection ? (
                 <button
                   type="button"
                   onClick={() => {
@@ -131,10 +212,37 @@ export default function Admin() {
                   }}
                   className={BTN.accent}
                 >
-                  <Plus className="h-3.5 w-3.5" /> New {collection.label.replace(/s$/, "").toLowerCase()}
+                  <Plus className="h-3.5 w-3.5" /> New{" "}
+                  {section.label.replace(/s$/, "").toLowerCase()}
                 </button>
-              </div>
+              ) : null}
+            </div>
 
+            {section.type === "panel" ? (
+              section.key === "org" ? (
+                <SettingsPanel
+                  entity="Organization"
+                  fields={ORG_FIELDS}
+                  intro="These details power the organization identity, contact block, and hero photo across the site."
+                  savedMessage="Organization updated"
+                />
+              ) : section.key === "website" ? (
+                <SettingsPanel
+                  entity="SiteSettings"
+                  fields={SITE_FIELDS}
+                  intro="Homepage title and intro, buttons, section headings, footer copy, contact details, and organization-wide GameChanger and livestream links."
+                  savedMessage="Website content updated"
+                />
+              ) : section.key === "users" ? (
+                <UsersPanel />
+              ) : section.key === "audit" ? (
+                <AuditPanel />
+              ) : section.key === "archive" ? (
+                <ArchivedPanel onRestored={reload} />
+              ) : (
+                <IntegrationsPanel onEditTeams={() => openSection("teams")} />
+              )
+            ) : (
               <EntityTable
                 collection={collection}
                 items={items}
@@ -145,12 +253,12 @@ export default function Admin() {
                 }}
                 onDelete={remove}
               />
-            </>
-          )}
+            )}
+          </div>
         </div>
       </div>
 
-      {editing && tab !== "organization" ? (
+      {editing && collection ? (
         <div className="fixed inset-0 z-50 flex justify-end bg-primary/40" onClick={closeForm}>
           <div
             className="h-full w-full max-w-xl overflow-y-auto border-l border-border bg-background p-5 sm:p-6"
@@ -159,9 +267,11 @@ export default function Admin() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="eyebrow text-accent">
-                  {editing.id ? "Edit" : "New"} {collection.label.replace(/s$/, "").toLowerCase()}
+                  {editing.id ? "Edit" : "New"} {section.label.replace(/s$/, "").toLowerCase()}
                 </p>
-                <h2 className="display mt-2 text-2xl">{editing.id ? "Update details" : "Add entry"}</h2>
+                <h2 className="display mt-2 text-2xl">
+                  {editing.id ? "Update details" : "Add entry"}
+                </h2>
               </div>
               <button
                 type="button"
