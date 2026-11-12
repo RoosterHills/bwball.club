@@ -60,6 +60,29 @@ function FileField({ value, onChange }) {
   );
 }
 
+function ColorField({ value, onChange }) {
+  const safe = /^#[0-9a-fA-F]{6}$/.test(String(value ?? "")) ? value : "#000000";
+  return (
+    <div className="flex items-center gap-2">
+      <input
+        type="color"
+        value={safe}
+        onChange={(e) => onChange(e.target.value)}
+        className="h-9 w-12 shrink-0 cursor-pointer border border-border bg-card p-0.5"
+        aria-label="Pick a color"
+      />
+      <input
+        id={undefined}
+        type="text"
+        className={INPUT}
+        value={value ?? ""}
+        placeholder="#111111"
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </div>
+  );
+}
+
 function ImageField({ value, onChange, accept = "image/*" }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -205,6 +228,9 @@ export default function FormField({ field, value, onChange, lookups = {} }) {
       break;
     case "file":
       control = <FileField value={value} onChange={set} />;
+      break;
+    case "color":
+      control = <ColorField value={value} onChange={set} />;
       break;
     default:
       control = (

@@ -27,6 +27,14 @@
       ],
       "default": "community"
     },
+    "sponsor_start_date": {
+      "type": "string",
+      "description": "When the sponsorship began"
+    },
+    "sponsor_end_date": {
+      "type": "string",
+      "description": "When the sponsorship ends; empty means ongoing"
+    },
     "contact_name": {
       "type": "string"
     },

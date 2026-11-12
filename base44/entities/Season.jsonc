@@ -6,6 +6,10 @@
       "type": "string",
       "description": "e.g. Spring 2027"
     },
+    "sport": {
+      "type": "string",
+      "description": "Sport record id"
+    },
     "start_date": {
       "type": "string"
     },

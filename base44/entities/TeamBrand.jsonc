@@ -1,0 +1,88 @@
+{
+  "name": "TeamBrand",
+  "type": "object",
+  "properties": {
+    "brand_name": {
+      "type": "string",
+      "description": "Internal brand name, e.g. NexTec Eagles Identity"
+    },
+    "display_name": {
+      "type": "string",
+      "description": "Full public name used on the team hub, e.g. NexTec Eagles 16U"
+    },
+    "logo": {
+      "type": "string",
+      "description": "Team crest / logo image URL"
+    },
+    "sponsor_logo": {
+      "type": "string",
+      "description": "Sponsor logo image URL"
+    },
+    "primary_color": {
+      "type": "string",
+      "description": "Header band background, e.g. #111111"
+    },
+    "secondary_color": {
+      "type": "string"
+    },
+    "accent_color": {
+      "type": "string",
+      "description": "Eyebrows, rules, highlights"
+    },
+    "background_color": {
+      "type": "string",
+      "description": "Tinted section background"
+    },
+    "text_color": {
+      "type": "string",
+      "description": "Text on the primary band; leave empty to auto-pick readable text"
+    },
+    "banner_image": {
+      "type": "string"
+    },
+    "font_pairing": {
+      "type": "string",
+      "enum": [
+        "athletic",
+        "classic",
+        "modern"
+      ],
+      "enumColors": [
+        "blue",
+        "yellow",
+        "gray"
+      ],
+      "default": "athletic"
+    },
+    "sponsor_treatment": {
+      "type": "string",
+      "enum": [
+        "text_only",
+        "logo_only",
+        "logo_and_text",
+        "none"
+      ],
+      "enumColors": [
+        "gray",
+        "blue",
+        "green",
+        "pink"
+      ],
+      "default": "logo_and_text"
+    },
+    "visual_style": {
+      "type": "string",
+      "description": "Free-form direction, e.g. Traditional athletic"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "brand_name"
+  ],
+  "rls": {
+    "read": {}
+  }
+}

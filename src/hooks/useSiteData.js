@@ -12,6 +12,8 @@ const startOfToday = () => {
 const EMPTY = {
   organization: null,
   teams: [],
+  brands: [],
+  sports: [],
   sponsors: [],
   events: [],
   announcements: [],
@@ -23,9 +25,11 @@ export function useSiteData() {
 
   const load = useCallback(async () => {
     try {
-      const [orgRes, teamRes, sponsorRes, eventRes, annRes] = await Promise.all([
+      const [orgRes, teamRes, brandRes, sportRes, sponsorRes, eventRes, annRes] = await Promise.all([
         base44.entities.Organization.list("-created_date", 1),
         base44.entities.Team.list("-created_date", 100),
+        base44.entities.TeamBrand.list("-created_date", 100),
+        base44.entities.Sport.list("sort_order", 100),
         base44.entities.Sponsor.list("-created_date", 100),
         base44.entities.Event.list("start", 300),
         base44.entities.Announcement.list("-created_date", 100),
@@ -35,8 +39,10 @@ export function useSiteData() {
       setData({
         organization: rows(orgRes)[0] || null,
         teams: rows(teamRes)
-          .filter((t) => t.active !== false)
+          .filter((t) => t.active !== false && !t.archived)
           .sort((a, b) => (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0)),
+        brands: rows(brandRes).filter((b) => b.active !== false),
+        sports: rows(sportRes).filter((s) => s.active !== false),
         sponsors: rows(sponsorRes).filter((s) => s.active !== false),
         events: rows(eventRes),
         announcements: rows(annRes).filter(

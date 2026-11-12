@@ -48,6 +48,7 @@ const AuthenticatedApp = () => {
       <Route element={<SiteLayout />}>
         <Route path="/" element={<Home />} />
         <Route path="/teams/:teamId" element={<TeamHub />} />
+        <Route path="/:slug" element={<TeamHub />} />
         <Route path="/schedule" element={<Schedule />} />
         <Route path="/register" element={<RegistrationCenter />} />
         <Route path="/gamechanger" element={<GameChangerHub />} />

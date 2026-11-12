@@ -6,13 +6,29 @@
       "type": "string",
       "description": "Team nickname, e.g. Eagles"
     },
+    "slug": {
+      "type": "string",
+      "description": "Public URL, e.g. 16u renders at /16u"
+    },
     "age_group": {
       "type": "string",
       "description": "e.g. 13U, 16U"
     },
+    "sport": {
+      "type": "string",
+      "description": "Sport record id"
+    },
     "season": {
       "type": "string",
       "description": "Season label, e.g. Spring 2027"
+    },
+    "season_ref": {
+      "type": "string",
+      "description": "Season record id"
+    },
+    "brand": {
+      "type": "string",
+      "description": "TeamBrand record id \u2014 drives logo and colors"
     },
     "division": {
       "type": "string",
@@ -71,6 +87,11 @@
     "active": {
       "type": "boolean",
       "default": true
+    },
+    "archived": {
+      "type": "boolean",
+      "default": false,
+      "description": "Hidden from the public site but kept for history"
     },
     "sort_order": {
       "type": "number",

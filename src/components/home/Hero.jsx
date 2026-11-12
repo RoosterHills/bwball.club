@@ -1,28 +1,37 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import { Image } from "@/components/ui/image";
 import { MEDIA } from "@/lib/media";
-import { recordLine, sponsorFor } from "@/lib/selectors";
+import { recordLine, sponsorFor, teamPath } from "@/lib/selectors";
+import { brandAccent, brandLogo } from "@/lib/brand";
 import { fmtDate, fmtTime } from "@/lib/format";
 
-function TeamHubButton({ team, sponsors, nextEvent, delay }) {
+function TeamHubButton({ team, brand, sponsors, nextEvent, delay }) {
   const sponsor = sponsorFor(team, sponsors);
+  const name = brand?.display_name || `${sponsor?.name ? `${sponsor.name} ` : ""}${team.name}`;
+  const logo = brandLogo(brand);
+
   return (
     <Link
-      to={`/teams/${team.id}`}
-      className="rise group flex items-center justify-between gap-4 border border-primary-foreground/15 bg-primary-foreground/[0.04] px-5 py-4 transition-colors hover:border-accent/60 hover:bg-primary-foreground/[0.08]"
-      style={{ "--rise-delay": delay }}
+      to={teamPath(team)}
+      className="rise group flex items-center justify-between gap-4 border border-l-[3px] border-primary-foreground/15 bg-primary-foreground/[0.04] px-5 py-4 transition-colors hover:border-accent/60 hover:bg-primary-foreground/[0.08]"
+      style={{ "--rise-delay": delay, borderLeftColor: brandAccent(brand) }}
     >
-      <div className="min-w-0">
-        <p className="eyebrow text-accent">{team.age_group} Team Hub</p>
-        <p className="mt-1.5 truncate text-base font-semibold">
-          {sponsor?.name ? `${sponsor.name} ` : ""}
-          {team.name}
-        </p>
-        <p className="mt-1 truncate text-[11px] text-primary-foreground/50">
-          {nextEvent
-            ? `Next: ${fmtDate(nextEvent.start)} · ${fmtTime(nextEvent.start)}`
-            : "Schedule coming soon"}
-        </p>
+      <div className="flex min-w-0 items-center gap-3">
+        {logo ? (
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-[3px] bg-primary-foreground/10 p-1">
+            <Image src={logo} alt="" fittingType="fit" className="h-full w-full object-contain" />
+          </span>
+        ) : null}
+        <div className="min-w-0">
+          <p className="eyebrow text-accent">{team.age_group} Team Hub</p>
+          <p className="mt-1.5 truncate text-base font-semibold">{name}</p>
+          <p className="mt-1 truncate text-[11px] text-primary-foreground/50">
+            {nextEvent
+              ? `Next: ${fmtDate(nextEvent.start)} · ${fmtTime(nextEvent.start)}`
+              : "Schedule coming soon"}
+          </p>
+        </div>
       </div>
       <div className="shrink-0 text-right">
         <span className="num block text-lg font-semibold">{recordLine(team)}</span>
@@ -32,7 +41,7 @@ function TeamHubButton({ team, sponsors, nextEvent, delay }) {
   );
 }
 
-export default function Hero({ teams = [], sponsors = [], nextEventFor, heroImage }) {
+export default function Hero({ teams = [], brands = [], sponsors = [], nextEventFor, heroImage }) {
   const hero = heroImage || MEDIA.hero;
 
   return (
@@ -78,6 +87,7 @@ export default function Hero({ teams = [], sponsors = [], nextEventFor, heroImag
                 <TeamHubButton
                   key={team.id}
                   team={team}
+                  brand={brands.find((b) => b.id === team.brand) || null}
                   sponsors={sponsors}
                   nextEvent={nextEventFor ? nextEventFor(team.id) : null}
                   delay={`${280 + i * 80}ms`}

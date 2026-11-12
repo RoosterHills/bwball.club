@@ -24,6 +24,9 @@ export default function Admin() {
   const { items, loading, reload } = useCollection(collection.entity, collection.sort);
   const { items: teamList } = useCollection("Team", "sort_order");
   const { items: sponsorList } = useCollection("Sponsor", "name");
+  const { items: seasonList } = useCollection("Season", "-created_date");
+  const { items: sportList } = useCollection("Sport", "sort_order");
+  const { items: brandList } = useCollection("TeamBrand", "brand_name");
 
   const lookups = {
     teams: teamList.map((t) => ({
@@ -31,6 +34,12 @@ export default function Admin() {
       label: [t.name, t.age_group].filter(Boolean).join(" "),
     })),
     sponsors: sponsorList.map((s) => ({ value: s.id, label: s.name })),
+    seasons: seasonList.map((s) => ({ value: s.id, label: s.name })),
+    sports: sportList.map((s) => ({ value: s.id, label: s.name })),
+    brands: brandList.map((b) => ({
+      value: b.id,
+      label: b.display_name ? `${b.brand_name} — ${b.display_name}` : b.brand_name,
+    })),
   };
 
   const closeForm = () => {

@@ -2,6 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, FileText } from "lucide-react";
 import { useCollection, useSiteData } from "@/hooks/useSiteData";
 import { sortedEvents, teamDisplayName } from "@/lib/selectors";
+import { brandFont, brandFor, brandVars } from "@/lib/brand";
 import { isUpcoming } from "@/lib/format";
 import TeamHeader from "@/components/team/TeamHeader";
 import NextUpGrid from "@/components/team/NextUpGrid";
@@ -13,12 +14,25 @@ import { LoadingBlock } from "@/components/site/Loading";
 import NotFoundBlock from "@/components/site/NotFoundBlock";
 import { BTN } from "@/lib/styles";
 
+// Matches a team by record id (/teams/abc) or public slug (/16u, /13u).
+const matchTeam = (teams, { teamId, slug }) => {
+  if (teamId) return teams.find((t) => t.id === teamId);
+  const key = String(slug || "").toLowerCase();
+  if (!key) return undefined;
+  return teams.find((t) => {
+    const teamSlug = String(t.slug || "").toLowerCase().replace(/^\/+/, "");
+    const age = String(t.age_group || "").toLowerCase();
+    return teamSlug === key || (!teamSlug && age === key);
+  });
+};
+
 export default function TeamHub() {
-  const { teamId } = useParams();
-  const { teams, sponsors, events, announcements, loading } = useSiteData();
+  const params = useParams();
+  const { teams, brands, sponsors, events, announcements, loading } = useSiteData();
   const { items: resources } = useCollection("Resource", "sort_order");
 
-  const team = teams.find((t) => t.id === teamId);
+  const team = matchTeam(teams, params);
+  const brand = team ? brandFor(team, brands) : null;
 
   if (loading) return <LoadingBlock label="Loading team" />;
   if (!team) {
@@ -38,7 +52,7 @@ export default function TeamHub() {
   );
 
   return (
-    <>
+    <div data-brand-font={brandFont(brand)} style={brandVars(brand)}>
       <div className="shell pt-6">
         <Link
           to="/#teams"
@@ -49,7 +63,7 @@ export default function TeamHub() {
       </div>
 
       <div className="mt-4">
-        <TeamHeader team={team} sponsors={sponsors} />
+        <TeamHeader team={team} sponsors={sponsors} brand={brand} />
       </div>
 
       <div className="shell space-y-10 py-8 sm:py-10">
@@ -120,7 +134,7 @@ export default function TeamHub() {
                   rel="noreferrer"
                   className="flex items-center gap-3 border border-border bg-card px-4 py-3.5 text-sm hover:border-accent/50"
                 >
-                  <FileText className="h-4 w-4 shrink-0 text-accent" strokeWidth={1.75} />
+                  <FileText className="h-4 w-4 shrink-0 brand-accent-text" strokeWidth={1.75} />
                   <span className="truncate font-medium">{r.title}</span>
                 </a>
               ))}
@@ -128,6 +142,6 @@ export default function TeamHub() {
           </div>
         ) : null}
       </div>
-    </>
+    </div>
   );
 }

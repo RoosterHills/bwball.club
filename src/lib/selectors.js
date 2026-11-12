@@ -39,6 +39,12 @@ export function teamDisplayName(team, sponsors = []) {
   return [sponsor?.name, team.name, team.age_group].filter(Boolean).join(" ");
 }
 
+// Team hubs live at /16u when a slug is set, and fall back to /teams/<id>.
+export function teamPath(team) {
+  if (!team) return "/";
+  return team.slug ? `/${String(team.slug).replace(/^\/+/, "")}` : `/teams/${team.id}`;
+}
+
 export function teamShortName(team) {
   if (!team) return "";
   return [team.name, team.age_group].filter(Boolean).join(" ");

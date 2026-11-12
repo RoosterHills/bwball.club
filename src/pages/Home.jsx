@@ -8,18 +8,19 @@ import LatestNews from "@/components/home/LatestNews";
 import SponsorWall from "@/components/home/SponsorWall";
 
 export default function Home() {
-  const { organization, teams, sponsors, events, announcements } = useSiteData();
+  const { organization, teams, brands, sponsors, events, announcements } = useSiteData();
 
   return (
     <>
       <Hero
         teams={teams}
+        brands={brands}
         sponsors={sponsors}
         heroImage={organization?.hero_image}
         nextEventFor={(teamId) => nextEventFor(events, teamId)}
       />
       <QuickActions />
-      <TeamGrid teams={teams} sponsors={sponsors} events={events} />
+      <TeamGrid teams={teams} brands={brands} sponsors={sponsors} events={events} />
       <ThisWeek events={events} teams={teams} />
       <LatestNews announcements={announcements} teams={teams} />
       <SponsorWall sponsors={sponsors} />

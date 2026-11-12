@@ -2,8 +2,9 @@ import { Link } from "react-router-dom";
 import Section from "@/components/site/Section";
 import TeamCard from "@/components/site/TeamCard";
 import { nextEventFor as findNext } from "@/lib/selectors";
+import { brandFor } from "@/lib/brand";
 
-export default function TeamGrid({ teams = [], sponsors = [], events = [] }) {
+export default function TeamGrid({ teams = [], brands = [], sponsors = [], events = [] }) {
   return (
     <Section
       id="teams"
@@ -25,6 +26,7 @@ export default function TeamGrid({ teams = [], sponsors = [], events = [] }) {
             <TeamCard
               key={team.id}
               team={team}
+              brand={brandFor(team, brands)}
               sponsors={sponsors}
               nextEvent={findNext(events, team.id)}
             />

@@ -1,17 +1,19 @@
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import { Image } from "@/components/ui/image";
-import { recordLine, teamDisplayName } from "@/lib/selectors";
+import { recordLine, teamDisplayName, teamPath } from "@/lib/selectors";
+import { brandAccent, brandLogo } from "@/lib/brand";
 import { fmtDate, fmtTime } from "@/lib/format";
 
-export default function TeamCard({ team, sponsors, nextEvent }) {
-  const name = teamDisplayName(team, sponsors);
+export default function TeamCard({ team, brand = null, sponsors, nextEvent }) {
+  const name = brand?.display_name || teamDisplayName(team, sponsors);
 
   return (
     <Link
-      to={`/teams/${team.id}`}
+      to={teamPath(team)}
       className="group lift flex flex-col overflow-hidden rounded-[6px] border border-border bg-card"
     >
+      <span className="block h-1 w-full" style={{ backgroundColor: brandAccent(brand) }} />
       <div className="relative aspect-[16/10] overflow-hidden bg-primary/5">
         {team.photo ? (
           <Image
@@ -28,6 +30,11 @@ export default function TeamCard({ team, sponsors, nextEvent }) {
         <span className="num absolute left-3 top-3 rounded-[3px] bg-primary px-2 py-1 text-[10px] font-semibold tracking-[0.18em] text-primary-foreground">
           {team.age_group}
         </span>
+        {brandLogo(brand) ? (
+          <span className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center overflow-hidden rounded-[3px] bg-card p-1">
+            <Image src={brandLogo(brand)} alt="" fittingType="fit" className="h-full w-full object-contain" />
+          </span>
+        ) : null}
       </div>
 
       <div className="flex flex-1 flex-col p-5">
