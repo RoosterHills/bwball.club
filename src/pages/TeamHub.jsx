@@ -7,6 +7,7 @@ import { isUpcoming } from "@/lib/format";
 import TeamHeader from "@/components/team/TeamHeader";
 import NextUpGrid from "@/components/team/NextUpGrid";
 import TeamLinks from "@/components/team/TeamLinks";
+import TeamStory from "@/components/team/TeamStory";
 import WeatherCard from "@/components/team/WeatherCard";
 import EventRow from "@/components/site/EventRow";
 import AnnouncementCard from "@/components/site/AnnouncementCard";
@@ -15,23 +16,39 @@ import NotFoundBlock from "@/components/site/NotFoundBlock";
 import { BTN } from "@/lib/styles";
 
 // Matches a team by record id (/teams/abc) or public slug (/16u, /13u).
-const matchTeam = (teams, { teamId, slug }) => {
-  if (teamId) return teams.find((t) => t.id === teamId);
-  const key = String(slug || "").toLowerCase();
-  if (!key) return undefined;
-  return teams.find((t) => {
+const bySlugOrAge = (teams, key) =>
+  teams.find((t) => {
     const teamSlug = String(t.slug || "").toLowerCase().replace(/^\/+/, "");
     const age = String(t.age_group || "").toLowerCase();
     return teamSlug === key || (!teamSlug && age === key);
   });
+
+// Matches a team by record id (/teams/abc), public slug (/16u) or
+// sport-scoped address (/baseball/16u).
+const matchTeam = (teams, { teamId, slug, sport }, sports = []) => {
+  if (teamId) return teams.find((t) => t.id === teamId);
+  const key = String(slug || "").toLowerCase();
+  if (!key) return undefined;
+
+  const sportKey = String(sport || "").toLowerCase();
+  const sportId = sportKey
+    ? sports.find(
+        (s) =>
+          String(s.slug || "").toLowerCase() === sportKey ||
+          String(s.name || "").toLowerCase() === sportKey
+      )?.id
+    : null;
+
+  if (sportId) return bySlugOrAge(teams.filter((t) => t.sport === sportId), key) || bySlugOrAge(teams, key);
+  return bySlugOrAge(teams, key);
 };
 
 export default function TeamHub() {
   const params = useParams();
-  const { teams, brands, sponsors, events, announcements, loading } = useSiteData();
+  const { teams, brands, sports, sponsors, events, announcements, loading } = useSiteData();
   const { items: resources } = useCollection("Resource", "sort_order");
 
-  const team = matchTeam(teams, params);
+  const team = matchTeam(teams, params, sports);
   const brand = team ? brandFor(team, brands) : null;
 
   if (loading) return <LoadingBlock label="Loading team" />;
@@ -69,6 +86,7 @@ export default function TeamHub() {
       <div className="shell space-y-10 py-8 sm:py-10">
         <NextUpGrid team={team} events={events} />
         <TeamLinks team={team} />
+        <TeamStory team={team} />
 
         <div className="grid gap-8 lg:grid-cols-[1.45fr_1fr]">
           <div>

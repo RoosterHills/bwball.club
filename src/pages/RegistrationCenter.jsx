@@ -22,7 +22,7 @@ function RegistrationCard({ item }) {
           className={cn(
             CHIP,
             open
-              ? "border-emerald-600/25 bg-emerald-50 text-emerald-700"
+              ? "border-accent/40 bg-accent/10 text-foreground"
               : "border-border bg-secondary text-muted-foreground"
           )}
         >

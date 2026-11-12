@@ -31,6 +31,11 @@ export default function TeamHeader({ team, sponsors = [], brand = null }) {
             {[team.age_group, team.season].filter(Boolean).join(" · ")}
           </p>
           <h1 className="display mt-3 text-[2.4rem] leading-[0.95] sm:text-5xl">{name}</h1>
+          {team.motto ? (
+            <p className="brand-accent-text mt-2 text-[11px] font-semibold uppercase tracking-[0.2em]">
+              {team.motto}
+            </p>
+          ) : null}
 
           <div className={`mt-6 flex flex-wrap items-center gap-x-7 gap-y-3 text-xs ${faint}`}>
             <span>

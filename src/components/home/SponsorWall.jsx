@@ -8,7 +8,7 @@ const LEVEL_LABEL = {
   community: "Community",
 };
 
-export default function SponsorWall({ sponsors = [], title }) {
+export default function SponsorWall({ sponsors = [], title, intro }) {
   const active = sponsors.filter((s) => s.active !== false);
   if (!active.length) return null;
 
@@ -19,6 +19,7 @@ export default function SponsorWall({ sponsors = [], title }) {
           <div>
             <p className="eyebrow text-accent">Thank you</p>
             <h2 className="display mt-2 text-2xl sm:text-3xl">{title || "Our program sponsors"}</h2>
+            {intro ? <p className="mt-2 max-w-xl text-sm text-muted-foreground">{intro}</p> : null}
           </div>
           <Link
             to="/sponsors"

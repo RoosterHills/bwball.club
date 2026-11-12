@@ -19,11 +19,11 @@ export const brandFor = (team, brands = []) => {
   return brands.find((b) => b.id === team.brand) || null;
 };
 
-export const brandPrimary = (brand) => clean(brand?.primary_color, "#151f2b");
+export const brandPrimary = (brand) => clean(brand?.primary_color, "#0b0b0c");
 
-export const brandAccent = (brand) => clean(brand?.accent_color, "#b4451f");
+export const brandAccent = (brand) => clean(brand?.accent_color, "#c9a227");
 
-export const brandBackground = (brand) => clean(brand?.background_color, "#f4f1ea");
+export const brandBackground = (brand) => clean(brand?.background_color, "#f7f5f0");
 
 // True when the primary band needs light (white) text on top of it.
 export const usesLightText = (brand) => luminance(brandPrimary(brand)) < 0.62;

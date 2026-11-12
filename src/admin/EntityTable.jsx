@@ -63,7 +63,7 @@ export default function EntityTable({ collection, items, loading, onEdit, onDele
                     <span
                       className={cn(
                         "inline-block h-2 w-2 rounded-full",
-                        item[col.key] === false ? "bg-border" : "bg-emerald-500"
+                        item[col.key] === false ? "bg-border" : "bg-accent"
                       )}
                     />
                   ) : (

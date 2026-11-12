@@ -4,7 +4,7 @@ import TeamCard from "@/components/site/TeamCard";
 import { nextEventFor as findNext } from "@/lib/selectors";
 import { brandFor } from "@/lib/brand";
 
-export default function TeamGrid({ teams = [], brands = [], sponsors = [], events = [], title, intro }) {
+export default function TeamGrid({ teams = [], brands = [], sponsors = [], events = [], title, intro, parentBrand }) {
   return (
     <Section
       id="teams"
@@ -29,6 +29,7 @@ export default function TeamGrid({ teams = [], brands = [], sponsors = [], event
               brand={brandFor(team, brands)}
               sponsors={sponsors}
               nextEvent={findNext(events, team.id)}
+              parentBrand={parentBrand}
             />
           ))}
         </div>

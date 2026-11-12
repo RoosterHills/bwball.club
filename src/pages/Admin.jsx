@@ -31,6 +31,7 @@ const GROUP_OF = {
   sports: "Program",
   seasons: "Program",
   sponsors: "Program",
+  partners: "Program",
   events: "Season ops",
   announcements: "Season ops",
   registrations: "Season ops",

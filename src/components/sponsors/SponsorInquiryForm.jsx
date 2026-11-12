@@ -26,11 +26,11 @@ export default function SponsorInquiryForm() {
 
   if (done) {
     return (
-      <div className={`${CARD} border-emerald-600/25 bg-emerald-50 p-6`}>
-        <p className="text-sm font-semibold text-emerald-900">
+      <div className={`${CARD} border-accent/40 bg-accent/10 p-6`}>
+        <p className="text-sm font-semibold text-foreground">
           Thank you — your sponsorship inquiry is in.
         </p>
-        <p className="mt-2 text-sm text-emerald-800/80">
+        <p className="mt-2 text-sm text-muted-foreground">
           A board member will reach out within a couple of days with the sponsor packet.
         </p>
       </div>

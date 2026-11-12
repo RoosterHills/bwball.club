@@ -31,9 +31,9 @@ export default function SignupForm({ opportunity, onDone }) {
 
   if (done) {
     return (
-      <div className="mt-4 border border-emerald-600/25 bg-emerald-50 px-4 py-4 text-sm text-emerald-800">
+      <div className="mt-4 border border-accent/40 bg-accent/10 px-4 py-4 text-sm text-foreground">
         <p className="font-semibold">You're on the list for {opportunity.title}.</p>
-        <p className="mt-1 text-emerald-700/80">
+        <p className="mt-1 text-muted-foreground">
           A volunteer coordinator will follow up by email with details.
         </p>
       </div>

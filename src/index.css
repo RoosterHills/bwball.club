@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,33 +6,34 @@
 
 @layer base {
   :root {
-    --background: 45 33% 95%;
-    --foreground: 220 24% 11%;
+    /* Big Walnut Baseball: black, athletic gold, eagle red, white */
+    --background: 40 22% 97%;
+    --foreground: 0 0% 7%;
     --card: 0 0% 100%;
-    --card-foreground: 220 24% 11%;
+    --card-foreground: 0 0% 7%;
     --popover: 0 0% 100%;
-    --popover-foreground: 220 24% 11%;
-    --primary: 214 40% 12%;
-    --primary-foreground: 45 33% 96%;
-    --secondary: 40 22% 90%;
-    --secondary-foreground: 220 24% 12%;
-    --muted: 40 18% 91%;
-    --muted-foreground: 220 9% 42%;
-    --accent: 16 74% 44%;
-    --accent-foreground: 45 40% 97%;
-    --destructive: 0 68% 44%;
+    --popover-foreground: 0 0% 7%;
+    --primary: 0 0% 8%;
+    --primary-foreground: 40 25% 96%;
+    --secondary: 40 14% 92%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 40 12% 93%;
+    --muted-foreground: 0 0% 40%;
+    --accent: 41 72% 41%;
+    --accent-foreground: 0 0% 8%;
+    --destructive: 355 72% 40%;
     --destructive-foreground: 0 0% 100%;
-    --border: 40 13% 84%;
-    --input: 40 13% 82%;
-    --ring: 16 74% 44%;
-    --radius: 0.375rem;
-    --chart-1: 16 74% 44%;
-    --chart-2: 214 40% 22%;
-    --chart-3: 40 40% 60%;
-    --chart-4: 170 30% 40%;
-    --chart-5: 12 50% 55%;
-    --font-heading: "Archivo", ui-sans-serif, system-ui, sans-serif;
-    --font-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
+    --border: 40 12% 86%;
+    --input: 40 12% 84%;
+    --ring: 41 72% 41%;
+    --radius: 0.25rem;
+    --chart-1: 41 72% 41%;
+    --chart-2: 0 0% 12%;
+    --chart-3: 355 72% 40%;
+    --chart-4: 40 28% 58%;
+    --chart-5: 0 0% 45%;
+    --font-heading: "Oswald", ui-sans-serif, system-ui, sans-serif;
+    --font-display: "Oswald", ui-sans-serif, system-ui, sans-serif;
     --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
     --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
   }
@@ -154,7 +155,7 @@
 
 /* Font pairing comes from the team brand profile. */
 [data-brand-font="classic"] {
-  --font-display: "Barlow Condensed", "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Bebas Neue", "Oswald", ui-sans-serif, system-ui, sans-serif;
 }
 
 [data-brand-font="modern"] {

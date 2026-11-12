@@ -18,7 +18,7 @@ export default function TeamLinks({ team }) {
     team.watch_live_url && { label: "Watch Live", href: team.watch_live_url, Icon: Radio },
     team.gamechanger_url && { label: "GameChanger", href: team.gamechanger_url, Icon: Activity },
     team.photos_url && { label: "Photos", href: team.photos_url, Icon: Camera },
-    team.store_url && { label: "Team Store", href: team.store_url, Icon: ShoppingBag },
+    team.store_url && { label: team.store_label || "Team Store", href: team.store_url, Icon: ShoppingBag },
     { label: "Volunteer", to: "/volunteer", Icon: HeartHandshake },
     {
       label: "Contact Coaches",

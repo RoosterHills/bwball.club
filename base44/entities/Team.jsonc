@@ -34,6 +34,18 @@
       "type": "string",
       "description": "Optional division or league"
     },
+    "motto": {
+      "type": "string",
+      "description": "Team motto shown on the hub, e.g. One Team. One Standard."
+    },
+    "description": {
+      "type": "string",
+      "description": "Short team blurb shown under the hub header"
+    },
+    "brand_story": {
+      "type": "string",
+      "description": "Longer brand story shown on the team hub"
+    },
     "head_coach": {
       "type": "string"
     },
@@ -79,6 +91,10 @@
     },
     "store_url": {
       "type": "string"
+    },
+    "store_label": {
+      "type": "string",
+      "description": "Label for the team store link, e.g. Eagles Team Store"
     },
     "sponsor": {
       "type": "string",

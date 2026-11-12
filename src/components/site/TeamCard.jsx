@@ -5,7 +5,7 @@ import { recordLine, teamDisplayName, teamPath } from "@/lib/selectors";
 import { brandAccent, brandLogo } from "@/lib/brand";
 import { fmtDate, fmtTime } from "@/lib/format";
 
-export default function TeamCard({ team, brand = null, sponsors, nextEvent }) {
+export default function TeamCard({ team, brand = null, sponsors, nextEvent, parentBrand }) {
   const name = brand?.display_name || teamDisplayName(team, sponsors);
 
   return (
@@ -39,7 +39,10 @@ export default function TeamCard({ team, brand = null, sponsors, nextEvent }) {
 
       <div className="flex flex-1 flex-col p-5">
         <div className="flex items-start justify-between gap-3">
-          <h3 className="display text-xl leading-tight">{name}</h3>
+          <div>
+            <p className="eyebrow text-muted-foreground">{parentBrand || "Big Walnut Baseball"}</p>
+            <h3 className="display mt-1 text-xl leading-tight">{name}</h3>
+          </div>
           <ArrowUpRight className="mt-1 h-4 w-4 shrink-0 text-muted-foreground/40 transition-colors group-hover:text-accent" />
         </div>
         <div className="mt-2 flex items-center gap-3 text-[11px] text-muted-foreground">
