@@ -19,6 +19,7 @@ import News from '@/pages/News';
 import CoachesCorner from '@/pages/CoachesCorner';
 import Admin from '@/pages/Admin';
 import Gallery from '@/pages/Gallery';
+import Stories from '@/pages/Stories';
 import Members from '@/pages/Members';
 import Membership from '@/pages/Membership';
 import Login from '@/pages/Login';
@@ -69,6 +70,7 @@ const AuthenticatedApp = () => {
         <Route path="/news" element={<News />} />
         <Route path="/coaches" element={<CoachesCorner />} />
         <Route path="/gallery" element={<Gallery />} />
+        <Route path="/stories" element={<Stories />} />
         <Route
           element={
             <ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />

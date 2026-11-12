@@ -3,13 +3,19 @@ import { Image } from "@/components/ui/image";
 import { useCollection } from "@/hooks/useSiteData";
 import { EmptyBlock, LoadingBlock } from "@/components/site/Loading";
 
-const FILTERS = [
-  { key: "all", label: "Everything" },
-  { key: "team_photo", label: "Team photos" },
-  { key: "gallery", label: "Galleries" },
-  { key: "banner", label: "Highlights" },
-  { key: "general", label: "Community" },
-];
+const CATEGORY_LABEL = {
+  team_photo: "Team photos",
+  championship: "Championships",
+  community_service: "Community service",
+  fundraiser: "Fundraisers",
+  practice: "Practices",
+  celebration: "Celebrations",
+  tradition: "Traditions",
+  alumni: "Alumni",
+  gallery: "Galleries",
+  banner: "Highlights",
+  general: "Moments",
+};
 
 export default function Gallery() {
   const { items, loading } = useCollection("MediaAsset", "sort_order");
@@ -26,6 +32,11 @@ export default function Gallery() {
     [items]
   );
 
+  const categories = useMemo(() => {
+    const seen = new Set(photos.map((p) => p.category).filter(Boolean));
+    return Array.from(seen);
+  }, [photos]);
+
   const shown = filter === "all" ? photos : photos.filter((p) => p.category === filter);
 
   return (
@@ -37,30 +48,44 @@ export default function Gallery() {
             Our seasons, in pictures
           </h1>
           <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
-            Championships, practices, community days and fundraisers. Only approved photos shared by
-            the organization are published here — team galleries and family information live behind
+            Championships, tournament wins, practices, community service days, fundraisers and the
+            traditions that hold this program together. Everything here is shared by the
+            organization for the whole community — team galleries and family information stay behind
             a member login.
           </p>
         </div>
       </div>
 
       <div className="shell py-8 sm:py-10">
-        <div className="flex flex-wrap gap-2">
-          {FILTERS.map((item) => (
+        {categories.length > 1 ? (
+          <div className="flex flex-wrap gap-2">
             <button
-              key={item.key}
               type="button"
-              onClick={() => setFilter(item.key)}
+              onClick={() => setFilter("all")}
               className={
-                filter === item.key
+                filter === "all"
                   ? "border border-primary bg-primary px-3.5 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-primary-foreground"
                   : "border border-border px-3.5 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground/70 hover:border-accent hover:text-accent"
               }
             >
-              {item.label}
+              Everything
             </button>
-          ))}
-        </div>
+            {categories.map((category) => (
+              <button
+                key={category}
+                type="button"
+                onClick={() => setFilter(category)}
+                className={
+                  filter === category
+                    ? "border border-primary bg-primary px-3.5 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-primary-foreground"
+                    : "border border-border px-3.5 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground/70 hover:border-accent hover:text-accent"
+                }
+              >
+                {CATEGORY_LABEL[category] || category}
+              </button>
+            ))}
+          </div>
+        ) : null}
 
         {loading ? (
           <LoadingBlock label="Loading gallery" />

@@ -13,6 +13,13 @@
       "type": "string",
       "enum": [
         "team_photo",
+        "championship",
+        "community_service",
+        "fundraiser",
+        "practice",
+        "celebration",
+        "tradition",
+        "alumni",
         "sponsor_asset",
         "banner",
         "gallery",
@@ -21,6 +28,13 @@
       "enumColors": [
         "blue",
         "yellow",
+        "green",
+        "pink",
+        "purple",
+        "yellow",
+        "gray",
+        "blue",
+        "gray",
         "purple",
         "green",
         "gray"

@@ -6,6 +6,7 @@ import { logAudit } from "@/lib/audit";
 import { ACCESS_LABELS } from "@/hooks/useMembership";
 
 const rows = (res) => (Array.isArray(res) ? res : res?.items ?? []);
+const GRANT_LEVELS = ["fan", "parent", "player", "coach", "team_admin"];
 const STATUS_STYLE = {
   pending: "border-accent/40 bg-accent/10 text-foreground",
   approved: "border-primary/20 bg-secondary text-foreground",
@@ -18,6 +19,7 @@ export default function AccessPanel() {
   const [users, setUsers] = useState([]);
   const [busy, setBusy] = useState("");
   const [error, setError] = useState("");
+  const [grant, setGrant] = useState({});
 
   const loadUsers = async () => {
     try {
@@ -41,7 +43,7 @@ export default function AccessPanel() {
       );
       if (match) {
         await base44.entities.User.update(match.id, {
-          access_level: request.requested_level || "parent",
+          access_level: grant[request.id] || request.requested_level || "parent",
           access_status: "approved",
           ...(request.team ? { linked_teams: [request.team] } : {}),
         });
@@ -115,9 +117,17 @@ export default function AccessPanel() {
                     <p className="text-xs text-muted-foreground">{request.email}</p>
                   </td>
                   <td className="px-4 py-3 text-xs">
-                    <span className="inline-block border border-border px-2 py-1">
-                      {ACCESS_LABELS[request.requested_level] || request.requested_level}
-                    </span>
+                    <select
+                      value={grant[request.id] || request.requested_level || "parent"}
+                      onChange={(e) => setGrant((prev) => ({ ...prev, [request.id]: e.target.value }))}
+                      className="border border-input bg-background px-2 py-1 text-xs outline-none focus:border-accent"
+                    >
+                      {GRANT_LEVELS.map((level) => (
+                        <option key={level} value={level}>
+                          {ACCESS_LABELS[level]}
+                        </option>
+                      ))}
+                    </select>
                   </td>
                   <td className="px-4 py-3 text-xs text-muted-foreground">
                     {request.players || "—"}

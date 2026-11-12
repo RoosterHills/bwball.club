@@ -44,6 +44,7 @@ const GROUP_OF = {
   inquiries: "Season ops",
   media: "Media",
   nav: "Website",
+  stories: "Website",
 };
 
 const GROUP_ORDER = ["Program", "Season ops", "Media", "Website", "People", "System"];
